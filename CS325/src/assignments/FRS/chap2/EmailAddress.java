@@ -54,7 +54,7 @@ public class EmailAddress {
 //    int dotPosition = address.indexOf('.');
 //    if ( dotPosition < atPosition ) return false;
 	  
-	  if(address.matches("([A-Za-z_])(\\w+)*@(\\w+\\.)(\\w+)(\\.\\w+)*")){
+	  if(address.matches("([A-Za-z])(\\w+)*@(([A-Za-z])(\\w+)*)((\\.[A-Za-z])(\\w*))+")){
 		  return true;
 	  }
 	  else {

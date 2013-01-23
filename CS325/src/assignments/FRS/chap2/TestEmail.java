@@ -118,5 +118,19 @@ public class TestEmail {
 		EmailAddress emailAddress = new EmailAddress(testString);
 		assertTrue(emailAddress.isValid());
 	}
+	@Test
+    public void identifiersAfterAtShouldBeginWithChar() {
+        
+        String testString = "jpbudi11@smumn.11edu.mn.us";
+        EmailAddress emailAddress = new EmailAddress(testString);
+        assertFalse(emailAddress.isValid());
+    }
+	@Test
+    public void shouldNotContainIllegalCharacters() {
+        
+        String testString = "j&budi11@smumn.*edu.mn#.us";
+        EmailAddress emailAddress = new EmailAddress(testString);
+        assertFalse(emailAddress.isValid());
+    }
 
 }
