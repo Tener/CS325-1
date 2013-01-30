@@ -1,0 +1,110 @@
+TDD process Log Book
+
+1 (test already written for me) Should have black pawn on 0, 0
+2 test fails
+3 create method placeBlackPieceOnBoard(int, int)
+4 all test pass
+5 no need to refactor
+
+1 write test Should have white pawn on 7, 7
+2 test fails
+3 create method placeWhitePieceOnBoard(int, int)
+4 all test pass
+5 no need to refactor
+
+1 write test should have full beginning board()
+2 test fails
+3 create method fillBoardForGameStart()
+4 test fails for having NONE piece type in blank spaces
+3 add small code chunk to make blank spaces NONE
+4 all tests pass
+5 no need to refactor
+
+1 write test should be white to go first
+2 test fails
+3 make instance variable playerInTurn and make it WHITE
+4 test pass
+5 no need to refactor
+
+1 write test should make a valid move with no attack
+2 test fails
+3 write method Boolean isMoveValid(int, int, int, int)
+4 test fails 
+3 need to add more to incorporate the piece type to go to to be NONE
+4 test pass
+5 no need to refactor
+
+1 write test should make a move
+2 test fail
+3 write the move method
+4 test fail
+3 re write method to make the pieces switch using the piece you start with
+4 test pass
+5 no need to refactor
+
+1 write test should make a valid move with an attack
+2 test fails
+3 re write method Boolean isMoveValid(int, int, int, int) to incorporate a move with an attack, using math to know what row and column in
+4 test fail
+3 incorporate that the type of space attacking can not be NONE or same type of your pawn
+4 test fail
+3 use different if statement to incorporate everything needed
+4 test pass
+5 no need to refactor
+
+1 write test should make a move with an attack
+2 test pass because of how it was written the first time
+5 no need to refactor
+
+1 write test should toggle player
+2 test fails
+3 write toggle player method and call it in move for every time you make a move
+4 test fails
+3 change the if statements so that it is not a continuous loop that gives the same player it started with.
+4 test pass
+5 no need to refactor
+
+1 write test should not play out of turn
+2 test fails
+3 wrap some of code in is a valid move method in if statement to make sure the correct 
+player is playing by comparing the player and the type of pawn moved
+4 test pass
+5 no need to refactor
+
+1 write should white win test
+2 test fails
+3 add code to get winner and make method is there a winner method
+also make variable to keep track of current winner and set to null
+4 test pass
+5 no need to refactor
+
+1 write should black win test
+2 test pass because it is compatible with the code made in should white win test code.
+5 no need to refactor.
+
+
+Final Test list
+
+1.	make existing test pass, Should have black pawn on 0, 0
+2.	make a white pawn stay on board
+3.	set the board for the beginning of the game
+4.	make a move
+5.	make a move that is a correct move
+6.	do not move out of turn
+7.	keep track of turn it is
+8.	make a move that can “attack” and take out another pawn
+9.	change player after every move
+10.	win after your pawn is in your home row
+
+
+My experience for the fist time on my own with TDD (Test Driven Design) was a very successful 
+and good one. It made writing the program more enjoyable and seemingly more realistic. It was 
+more realistic in the fact that I had a list in front of me of little things that I needed to 
+have done. It was also a sense of accomplishment when you get all of your tests to pass and 
+then you make a new easy task to work on.  Sometimes I found myself getting off task but then 
+when this happened you just write another task on your task list and finish the simple test that 
+you are working on. I found it difficult to fake it, and when I thought maybe I needed to fake it
+, I would work ahead and try to fix it. This process made it more difficult than it needed to be, 
+because TDD is meant to have times when you “fake it”.  All in all, the TDD method of writing 
+software is something that is very easy to use and I feel as if you get a lot more accomplished 
+when using it.

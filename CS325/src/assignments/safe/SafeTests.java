@@ -27,5 +27,19 @@ public class SafeTests {
 		assertFalse("Safe is unlocked", s.isLocked());
 		assertEquals("Display Should be 'open'", Safe.OPEN_DISPLAY, s.readDisplay());
 	}
+	
+	@Test
+	public void shouldDisplayErrorIfKeyButtonNotFistButton() {
+		Safe s = new SafeImpl();
+		s.enter('1');
+		s.enter('2');
+		s.enter('3');
+		s.enter('4');
+		s.enter('5');
+		s.enter('6');
+		
+		assertTrue("Safe is locked", s.isLocked());
+		assertEquals("Display Should be 'error'", Safe.ERROR_DISPLAY, s.readDisplay());
+	}
 
 }
