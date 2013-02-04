@@ -38,7 +38,7 @@ public enum Location {
 	// the bearing off locations
 	B_BEAR_OFF, R_BEAR_OFF;
 
-	private static final int N_LOCATIONS = 25; // bear off included 
+	public static final int N_LOCATIONS = 25; // bear off included 
 	/**
 	 * calculate the distance between two locations. The distance function is
 	 * signed to signal movement direction: it is POSITIVE when moving TOWARDS

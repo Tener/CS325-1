@@ -1,4 +1,7 @@
 package frs.hotgammon.alphamon;
+
+import java.util.HashMap;
+
 /** This interface encapsulate all responsibilites of
     a Backgammon game. Please consult the book's
     project part for further descriptions.
@@ -20,9 +23,10 @@ package frs.hotgammon.alphamon;
 
 public interface Game {
 
-  // == mutator methods ==
+  // == mutator methods ==//
 
-  /** Reset the entire game to start from scratch. 
+
+/** Reset the entire game to start from scratch. 
    * No player is in turn, and the game awaits a
    * call to nextTurn to start a game.
    */
@@ -114,5 +118,7 @@ public interface Game {
    * @return a integer value showing the number of checkers on this location.
    */
   public int getCount(Location location);
+
+public void makeMove(Location r1, Location r2);
   
 }
