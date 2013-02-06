@@ -62,7 +62,6 @@ public class GameImpl implements Game {
 	  board[Location.R12.ordinal()].setNumberOfCheckers(5);
 	  board[Location.R12.ordinal()].setColorOfLocation(Color.BLACK);
 		
-	this.nextTurn();
 
   }
   public void nextTurn() {
@@ -76,6 +75,22 @@ public class GameImpl implements Game {
 	  
 	  if( colorInTurn == board[from.ordinal()].colorOfLocation){
 		  if( board[from.ordinal()].colorOfLocation == board[to.ordinal()].colorOfLocation || board[to.ordinal()].colorOfLocation == Color.NONE){
+			  
+			  int tempFrom  = board[from.ordinal()].getNumberOfCheckers();
+				 int tempTo = board[to.ordinal()].getNumberOfCheckers();
+				 
+				 if(board[to.ordinal()].colorOfLocation == Color.NONE){
+					 board[to.ordinal()].setColorOfLocation (board[from.ordinal()].colorOfLocation);
+				 }
+				 
+				 board[from.ordinal()].setNumberOfCheckers(tempFrom - 1);
+				 board[to.ordinal()].setNumberOfCheckers(tempTo + 1);
+				 
+				 currentDiceIndex = currentDiceIndex - 1;
+				 
+				 System.out.println(board[from.ordinal()].getNumberOfCheckers());
+				 System.out.println(board[to.ordinal()].getNumberOfCheckers());
+				 
 			  return true;
 		  }
 		  else {
@@ -87,31 +102,31 @@ public class GameImpl implements Game {
 	  }
   }
   
-  public void makeMove(Location from, Location to){
-	  if(move(from, to) == true){
-		 int tempFrom  = board[from.ordinal()].getNumberOfCheckers();
-		 int tempTo = board[to.ordinal()].getNumberOfCheckers();
-		 
-		 if(board[to.ordinal()].colorOfLocation == Color.NONE){
-			 board[to.ordinal()].setColorOfLocation (board[from.ordinal()].colorOfLocation);
-		 }
-		 
-		 board[from.ordinal()].setNumberOfCheckers(tempFrom - 1);
-		 board[to.ordinal()].setNumberOfCheckers(tempTo + 1);
-		 
-		 currentDiceIndex = currentDiceIndex - 1;
-		 
-		 System.out.println(board[from.ordinal()].getNumberOfCheckers());
-		 System.out.println(board[to.ordinal()].getNumberOfCheckers());
-
-	  }
-	  
-	  else{
-		  System.out.println("Can not make this move");
-		  return;
-	  }
-		 
-  }
+//  public void makeMove(Location from, Location to){
+//	  if(move(from, to) == true){
+//		 int tempFrom  = board[from.ordinal()].getNumberOfCheckers();
+//		 int tempTo = board[to.ordinal()].getNumberOfCheckers();
+//		 
+//		 if(board[to.ordinal()].colorOfLocation == Color.NONE){
+//			 board[to.ordinal()].setColorOfLocation (board[from.ordinal()].colorOfLocation);
+//		 }
+//		 
+//		 board[from.ordinal()].setNumberOfCheckers(tempFrom - 1);
+//		 board[to.ordinal()].setNumberOfCheckers(tempTo + 1);
+//		 
+//		 currentDiceIndex = currentDiceIndex - 1;
+//		 
+//		 System.out.println(board[from.ordinal()].getNumberOfCheckers());
+//		 System.out.println(board[to.ordinal()].getNumberOfCheckers());
+//
+//	  }
+//	  
+//	  else{
+//		  System.out.println("Can not make this move");
+//		  return;
+//	  }
+//		 
+//  }
   
   public Color getPlayerInTurn() { 
 	  return colorInTurn; 

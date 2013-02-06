@@ -39,6 +39,7 @@ public class BoardTests {
 	public void shouldBeAbleToPlaceSameColorsOnSamePoint(){
 		
 		game.newGame();
+		game.nextTurn();
 		
 		assertEquals(" valid move between two colors", true, game.move(Location.R12, Location.R1));
 		
@@ -57,6 +58,7 @@ public class BoardTests {
 	public void shouldBeAbleToRemovePlayerOfCorrectColor(){
 		
 		game.newGame();
+		game.nextTurn();
 		
 		assertEquals("can move a checker of the correct color", true, game.move(Location.R12, Location.R1));
 		
@@ -75,10 +77,10 @@ public class BoardTests {
 	public void shouldMove1fromR1toR2(){
 		
 		game.newGame();
+		game.nextTurn();
 			
 		assertEquals("can move a checker of the correct color", true, game.move(Location.R1, Location.R2));
 		
-		game.makeMove(Location.R1, Location.R2);
 		
 		assertEquals("can move a checker of the correct color R1", 1, game.getCount(Location.R1));
 		assertEquals("can move a checker of the correct color R2", 1, game.getCount(Location.R2));
@@ -93,7 +95,7 @@ public class BoardTests {
 		
 		assertEquals("can move a checker of the correct color", false, game.move(Location.R1, Location.B1));
 		
-		game.makeMove(Location.R1, Location.B1);
+		game.move(Location.R1, Location.B1);
 		
 		assertEquals("can move a checker of the correct color R1", 2, game.getCount(Location.R1));
 		assertEquals("can move a checker of the correct color R2", 2, game.getCount(Location.B1));

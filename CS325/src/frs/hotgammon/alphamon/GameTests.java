@@ -12,11 +12,11 @@ public class GameTests {
 	@Before
 	public void setUp() {
 		game = new GameImpl();
+		game.newGame();
 	}
 	
 	@Test
 	public void ShouldBeBlackToGoFirst() {
-		
 		game.nextTurn();
 		
 		assertEquals("Black is first to go", Color.BLACK, game.getPlayerInTurn());
@@ -25,10 +25,9 @@ public class GameTests {
 	@Test
 	public void shouldRunOutOfMoves(){
 		
-		game.newGame();
 		
-		game.makeMove(Location.R1, Location.R2);
-		game.makeMove(Location.R1, Location.R2);
+		game.move(Location.R1, Location.R2);
+		game.move(Location.R1, Location.R2);
 		
 		assertEquals(" no moves should be left ", 0, game.getNumberOfMovesLeft());
 		
@@ -36,58 +35,58 @@ public class GameTests {
 	
 	@Test
 	public void shouldGetNextTurnAndDiceBe34(){
-		game.newGame();
 		
 		game.nextTurn();
+		game.nextTurn();
 		
-		int [] currentDice = game.diceValuesLeft();
+		int [] currentDice = game.diceThrown();
 		
 		int firstDie = currentDice[0];
 		int secondDie = currentDice[1];
 		
 		System.out.println(firstDie + " " + secondDie);
 		
-		assertEquals( "dice should be 3-4", 3, secondDie);
-		assertEquals( "dice should be 3-4", 4, firstDie);
+		assertEquals( "dice should be 3-4", 3, firstDie);
+		assertEquals( "dice should be 3-4", 4, secondDie);
 	}
 	
 	@Test
-	public void shouldGetNextTurnTwiceAndDiceBe56(){
-		game.newGame();
+	public void shouldGetNextTurnThreeTimesAndDiceBe56(){
 		
 		game.nextTurn();
 		game.nextTurn();
+		game.nextTurn();
 		
-		int [] currentDice = game.diceValuesLeft();
+		
+		int [] currentDice = game.diceThrown();
 		
 		int firstDie = currentDice[0];
 		int secondDie = currentDice[1];
 		
 		System.out.println(firstDie + " " + secondDie);
 		
-		assertEquals( "dice should be 5-6", 5, secondDie);
-		assertEquals( "dice should be 5-6", 6, firstDie);
+		assertEquals( "dice should be 5-6", 5, firstDie);
+		assertEquals( "dice should be 5-6", 6, secondDie);
 	}
 	
 	@Test
 	public void shouldGetDice1And2OnOpeningTurn(){
-		game.newGame();
 		
+		game.nextTurn();
 		
-		int [] currentDice = game.diceValuesLeft();
+		int [] currentDice = game.diceThrown();
 		
 		int firstDie = currentDice[0];
 		int secondDie = currentDice[1];
 		
-		assertEquals( "dice should be 1-2", 1, secondDie);
-		assertEquals( "dice should be 1-2", 2, firstDie);
+		assertEquals( "dice should be 1-2", 1, firstDie);
+		assertEquals( "dice should be 1-2", 2, secondDie);
 	}
 	
 	@Test
 	public void shouldEndGameAfter6Rolls(){
 		
-		game.newGame();
-		
+		game.nextTurn();
 		game.nextTurn();
 		
 		assertEquals( "should not be a winner ", Color.NONE, game.winner());
@@ -105,7 +104,6 @@ public class GameTests {
 	@Test
 	public void shouldEndGameAfter5Rolls(){
 		
-		game.newGame();
 		
 		game.nextTurn();
 		
