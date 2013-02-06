@@ -31,8 +31,7 @@ import java.util.Iterator;
  * purposes. For any commercial use, see http://www.baerbak.com/
  */
 public enum Location {
-	B_BAR, 
-	R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12,
+	B_BAR, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12,
 	B12, B11, B10, B9, B8, B7, B6, B5, B4, B3, B2, B1,
 	R_BAR,
 	// the bearing off locations

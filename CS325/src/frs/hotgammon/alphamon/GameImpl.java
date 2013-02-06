@@ -22,48 +22,60 @@ import java.util.HashMap;
 public class GameImpl implements Game {
 	
 	public Color colorInTurn = Color.NONE;
-	public HashMap <Location,BoardPoint> board = null;
+	public BoardPoint[] board = null;
+	public int numberOfTurns;
+	public int [] currentDice;
+	public int currentDiceIndex;
 	  
   public void newGame() {
 	  
-	  board = new HashMap<Location, BoardPoint>();
-		for (Location l : Location.values()) {
-			board.put(l, new BoardPoint());
-		}
-		board.get(Location.B1).setNumberOfCheckers(2);
-		board.get(Location.B1).setColorOfLocation(Color.RED);
+	  numberOfTurns = 0;
+	  
+	  board = new BoardPoint[Location.N_LOCATIONS];
+	  
+	  for(int i = 0; i< Location.N_LOCATIONS; i++){
+		  
+		  board[i] = new BoardPoint();
+	  }
+	  
+	  board[Location.B1.ordinal()].setNumberOfCheckers(2);
+	  board[Location.B1.ordinal()].setColorOfLocation(Color.RED);
+	  
+	  board[Location.B6.ordinal()].setNumberOfCheckers(5);
+	  board[Location.B6.ordinal()].setColorOfLocation(Color.BLACK);
+	  
+	  board[Location.B8.ordinal()].setNumberOfCheckers(3);
+	  board[Location.B8.ordinal()].setColorOfLocation(Color.BLACK);
+	  
+	  board[Location.B12.ordinal()].setNumberOfCheckers(5);
+	  board[Location.B12.ordinal()].setColorOfLocation(Color.RED);
+	  
+	  board[Location.R1.ordinal()].setNumberOfCheckers(2);
+	  board[Location.R1.ordinal()].setColorOfLocation(Color.BLACK);
+	  
+	  board[Location.R6.ordinal()].setNumberOfCheckers(5);
+	  board[Location.R6.ordinal()].setColorOfLocation(Color.RED);
+	  
+	  board[Location.R8.ordinal()].setNumberOfCheckers(3);
+	  board[Location.R8.ordinal()].setColorOfLocation(Color.RED);
+	  
+	  board[Location.R12.ordinal()].setNumberOfCheckers(5);
+	  board[Location.R12.ordinal()].setColorOfLocation(Color.BLACK);
 		
-		board.get(Location.B6).setNumberOfCheckers(5);
-		board.get(Location.B6).setColorOfLocation(Color.BLACK);
-		
-		board.get(Location.B8).setNumberOfCheckers(3);
-		board.get(Location.B8).setColorOfLocation(Color.BLACK);
-		
-		board.get(Location.B12).setNumberOfCheckers(5);
-		board.get(Location.B12).setColorOfLocation(Color.RED);
-		
-		board.get(Location.R1).setNumberOfCheckers(2);
-		board.get(Location.R1).setColorOfLocation(Color.BLACK);
-		
-		board.get(Location.R6).setNumberOfCheckers(5);
-		board.get(Location.R6).setColorOfLocation(Color.RED);
-		
-		board.get(Location.R8).setNumberOfCheckers(3);
-		board.get(Location.R8).setColorOfLocation(Color.RED);
-		
-		board.get(Location.R12).setNumberOfCheckers(5);
-		board.get(Location.R12).setColorOfLocation(Color.BLACK);
-		
-		this.nextTurn();
+	this.nextTurn();
 
   }
   public void nextTurn() {
 	  
-	  this.colorInTurn = Color.BLACK;
+	  colorInTurn = (colorInTurn != Color.BLACK) ? Color.BLACK : Color.RED;
+	    numberOfTurns++;
+	    currentDice = diceThrown();
   }
   public boolean move(Location from, Location to) { 
-	  if( colorInTurn == board.get(from).colorOfLocation){
-		  if( board.get(from).colorOfLocation == board.get(to).colorOfLocation || board.get(from).colorOfLocation == Color.NONE){
+	  
+	  
+	  if( colorInTurn == board[from.ordinal()].colorOfLocation){
+		  if( board[from.ordinal()].colorOfLocation == board[to.ordinal()].colorOfLocation || board[to.ordinal()].colorOfLocation == Color.NONE){
 			  return true;
 		  }
 		  else {
@@ -77,15 +89,21 @@ public class GameImpl implements Game {
   
   public void makeMove(Location from, Location to){
 	  if(move(from, to) == true){
-		 int tempFrom  = board.get(from).getNumberOfCheckers();
-		 int tempTo = board.get(to).getNumberOfCheckers();
+		 int tempFrom  = board[from.ordinal()].getNumberOfCheckers();
+		 int tempTo = board[to.ordinal()].getNumberOfCheckers();
 		 
-		 if(board.get(to).colorOfLocation == Color.NONE){
-			 board.get(to).setColorOfLocation (board.get(from).colorOfLocation);
+		 if(board[to.ordinal()].colorOfLocation == Color.NONE){
+			 board[to.ordinal()].setColorOfLocation (board[from.ordinal()].colorOfLocation);
 		 }
 		 
-		 board.get(from).setNumberOfCheckers(tempFrom - 1);
-		 board.get(to).setNumberOfCheckers(tempTo + 1);
+		 board[from.ordinal()].setNumberOfCheckers(tempFrom - 1);
+		 board[to.ordinal()].setNumberOfCheckers(tempTo + 1);
+		 
+		 currentDiceIndex = currentDiceIndex - 1;
+		 
+		 System.out.println(board[from.ordinal()].getNumberOfCheckers());
+		 System.out.println(board[to.ordinal()].getNumberOfCheckers());
+
 	  }
 	  
 	  else{
@@ -100,10 +118,55 @@ public class GameImpl implements Game {
 	  }
   
   
-  public int getNumberOfMovesLeft() { return 0; }
-  public int[] diceThrown() { return new int[] {1,1}; }
-  public int[] diceValuesLeft() { return new int []{}; }
-  public Color winner() { return Color.NONE; }
-  public Color getColor(Location location) { return Color.NONE; }
-  public int getCount(Location location) { return 0; }
+  public int getNumberOfMovesLeft() { 
+	  
+	  return currentDiceIndex ; 
+	  
+  }
+  public int[] diceThrown() { 
+	  
+	  currentDiceIndex = 2;
+	  if(numberOfTurns % 3 == 1){
+		  currentDice = new int[] {1,2};
+	  }
+	  
+	  if(numberOfTurns % 3 == 2){
+		  currentDice = new int[] {3,4};
+	  }
+	  
+	  if(numberOfTurns % 3 == 0){
+		  currentDice = new int[] {5,6};
+	  }
+	  
+	  return currentDice;
+	  
+	  
+  }
+  
+  public int[] diceValuesLeft() { 
+	  
+	  if (currentDice.length > 1 &&  currentDice[1] > currentDice[0])
+		  return new int[] { currentDice[1], currentDice[0]};
+	  
+	  return currentDice; 
+  }
+  public Color winner() { 
+	  
+	  if(numberOfTurns < 6)
+		  return Color.NONE;
+	  else
+		  return Color.RED;
+  }
+  
+  public Color getColor(Location location) { 
+	  
+	  return board [location.ordinal()].getColorOfLocation(); 
+	  
+  }
+  
+  public int getCount(Location location) { 
+	  
+	  return board[location.ordinal()].getNumberOfCheckers(); 
+	 
+  }
 }

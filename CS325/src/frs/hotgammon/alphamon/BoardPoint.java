@@ -11,7 +11,7 @@ public class BoardPoint {
 	public BoardPoint() {
 	}
 
-	public Location locationName = null;
+	public Location locationName;
 	
 	public Color colorOfLocation = Color.NONE;
 	
@@ -29,8 +29,8 @@ public class BoardPoint {
 		return colorOfLocation;
 	}
 
-	public void setColorOfLocation(Color colorOfLocation) {
-		this.colorOfLocation = colorOfLocation;
+	public void setColorOfLocation(Color colorOfLocationToBe) {
+		this.colorOfLocation = colorOfLocationToBe;
 	}
 
 	public int getNumberOfCheckers() {
