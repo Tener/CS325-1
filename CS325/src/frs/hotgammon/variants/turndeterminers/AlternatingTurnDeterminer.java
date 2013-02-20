@@ -10,6 +10,8 @@ public class AlternatingTurnDeterminer implements TurnDeterminer {
 	
 	@Override
 	public Color nextTurnChangePlayer(Color colorInTurn) {
+		
+		
 		return (colorInTurn != Color.BLACK) ? Color.BLACK : Color.RED;
 
 	}

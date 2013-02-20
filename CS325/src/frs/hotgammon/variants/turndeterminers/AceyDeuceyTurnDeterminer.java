@@ -10,27 +10,18 @@ public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
 	
 	@Override
 	public Color nextTurnChangePlayer(Color colorInTurn) {
-		boolean firstDie = false;
-		boolean secondDie = false;
 		
 		final int DICE_ONE = 1;
 		final int DICE_TWO = 2;
 		
-		for(int i = 0; i < game.diceThrown().length; i++){
+		
 			
-			if(game.diceThrown()[i] == DICE_ONE){
-				
-				firstDie=true;
+			if((game.diceThrown()[0] == DICE_ONE) && (game.diceThrown()[1] == DICE_TWO)){
+				return game.getPlayerInTurn();
 			}
-			if(game.diceThrown()[i] == DICE_TWO){
-				
-				secondDie=true;
-			}
-		}
-		if(firstDie && secondDie){
-			return game.getPlayerInTurn();
-		}
-		return colorInTurn==Color.BLACK?Color.RED:Color.BLACK;
+		
+		
+		return (colorInTurn != Color.BLACK) ? Color.BLACK : Color.RED;
 	}
 
 	@Override

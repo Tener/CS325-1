@@ -29,7 +29,7 @@ public class DeltaMonTests {
 		
 		game.nextTurn();
 		game.nextTurn();
-		
+		 
 		assertEquals("THird time color is black ", Color.RED, game.getPlayerInTurn());
 	}
 	
