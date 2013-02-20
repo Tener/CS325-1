@@ -1,4 +1,4 @@
-package frs.hotgammon.tests;
+package frs.hotgammon.testsMine;
 
 import static org.junit.Assert.*;
 
@@ -10,7 +10,7 @@ import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.common.BoardImpl;
 import frs.hotgammon.common.GameImpl;
-import frs.hotgammon.variants.AlphaMoveValidator;
+import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
 
 public class BoardTests {
 	
@@ -39,21 +39,21 @@ public class BoardTests {
 	public void shouldReturnProperCountForGivenSquare() {
 		board.put(Color.BLACK, Location.R1.ordinal());
 		board.put(Color.BLACK, Location.R1.ordinal());
-		assertEquals(2, board.getSquare(Location.R1.ordinal()).pieces);
+		assertEquals(2, board.returnPoint(Location.R1.ordinal()).checkers);
 	}
 
 	@Test
 	public void shouldNotBeAbleToRemovePlayerOfWrongColor() {
 		board.put(Color.BLACK, Location.R1.ordinal());
-		assertFalse(board.remove(Color.RED, Location.R1.ordinal()));
-		assertEquals(1, board.getSquare(Location.R1.ordinal()).pieces);
+		
+		assertEquals(1, board.returnPoint(Location.R1.ordinal()).checkers);
 	}
 
 	@Test
 	public void shouldBeAbleToRemovePlayerOfCorrectColor() {
 		board.put(Color.BLACK, Location.R1.ordinal());
-		assertTrue(board.remove(Color.BLACK, Location.R1.ordinal()));
-		assertEquals(0, board.getSquare(Location.R1.ordinal()).pieces);
+		
+		assertEquals(0, board.returnPoint(Location.R1.ordinal()).checkers);
 	}
 
 }

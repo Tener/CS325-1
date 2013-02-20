@@ -1,6 +1,6 @@
 package frs.hotgammon;
 
-public interface WinnerValidator {
+public interface WinnerDeterminer {
 
 	public Color returnWinner();
 	public void setGame(Game game);

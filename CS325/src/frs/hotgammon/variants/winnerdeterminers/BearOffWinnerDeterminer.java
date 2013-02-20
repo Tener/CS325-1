@@ -1,11 +1,11 @@
-package frs.hotgammon.variants;
+package frs.hotgammon.variants.winnerdeterminers;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.Location;
-import frs.hotgammon.WinnerValidator;
+import frs.hotgammon.WinnerDeterminer;
 
-public class GammaWinnerValidator implements WinnerValidator{
+public class BearOffWinnerDeterminer implements WinnerDeterminer{
 
 	Game game;
 	@Override

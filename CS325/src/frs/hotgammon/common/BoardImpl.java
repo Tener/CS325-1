@@ -1,74 +1,78 @@
 package frs.hotgammon.common;
 
-import java.util.ArrayList;
+
 
 import frs.hotgammon.Board;
+import frs.hotgammon.BoardPoint;
 import frs.hotgammon.Color;
 import frs.hotgammon.Location;
-import frs.hotgammon.Square;
+
 
 
 public class BoardImpl implements Board{
 	
-	public Square[] board;
+	public BoardPoint[] board;
+	public final Location BLACK_TABLE[]; 
+			
+			BLACKT_TABLE = new Location [6]{
 	
-	public static final ArrayList<Location> blackInnerTable = new ArrayList<Location>() {
-		{
-
-			this.add(Location.B1);
-			this.add(Location.B2);
-			this.add(Location.B3);
-			this.add(Location.B4);
-			this.add(Location.B5);
-			this.add(Location.B6);
-		}
-	};
-
-	public static final ArrayList<Location> redInnerTable = new ArrayList<Location>() {
-		{
-
-			this.add(Location.R1);
-			this.add(Location.R2);
-			this.add(Location.R3);
-			this.add(Location.R4);
-			this.add(Location.R5);
-			this.add(Location.R6);
-		}
-	};
+	
+	
+	
+	BLACK_TABLE [0] = Location.B1};
+//	BLACK_TABLE [1] = Location.B2,
+//	BLACK_TABLE [2] = Location.B3,
+//	BLACK_TABLE [3] = Location.B4,
+//	BLACK_TABLE [4] = Location.B5,
+//	BLACK_TABLE [5] = Location.B6
+//	};
+	
+//	public static final ArrayList<Location> blackInnerTable = new ArrayList<Location>() {
+//		{
+//
+//			this.add(Location.B1);
+//			this.add(Location.B2);
+//			this.add(Location.B3);
+//			this.add(Location.B4);
+//			this.add(Location.B5);
+//			this.add(Location.B6);
+//		}
+//	};
+//
+//	public static final ArrayList<Location> redInnerTable = new ArrayList<Location>() {
+//		{
+//
+//			this.add(Location.R1);
+//			this.add(Location.R2);
+//			this.add(Location.R3);
+//			this.add(Location.R4);
+//			this.add(Location.R5);
+//			this.add(Location.R6);
+//		}
+//	};
 
 	public BoardImpl(int points) {
 		
-		board = new Square[points];
+		board = new BoardPoint[points];
 		for (int i = 0; i < points; i++) {
-			board[i] = new Square();
+			board[i] = new BoardPoint();
 		}
 	}
 
 	
 	public boolean put(Color color, int point) {
-		Square square = board[point];
-		if (square.player != Color.NONE && square.player != color) {
+		BoardPoint bPoint = board[point];
+		if (bPoint.playerInTurn != Color.NONE && bPoint.playerInTurn != color) {
 			return false;
 		}
-		square.player = color;
-		square.pieces = square.pieces + 1;
+		bPoint.playerInTurn = color;
+		bPoint.checkers = bPoint.checkers + 1;
 		return true;
 	}
 
-	public boolean remove(Color player, int sqNumber) {
-		Square square = board[sqNumber];
-		if (player != square.player) {
-			return false;
-		}
-		square.pieces--;
-		if (square.pieces == 0) {
-			player = Color.NONE;;
-		}
-		return true;
-	}
 
-	public Square getSquare(int sqNumber) {
-		return board[sqNumber];
+	public BoardPoint returnPoint(int num) {
+		return board[num];
 	}
 	
 	

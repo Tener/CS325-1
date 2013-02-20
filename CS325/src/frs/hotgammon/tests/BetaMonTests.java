@@ -6,268 +6,322 @@ import org.junit.Before;
 import org.junit.Test;
 
 import frs.hotgammon.Color;
-import frs.hotgammon.Game;
 import frs.hotgammon.Location;
-import frs.hotgammon.Placement;
 import frs.hotgammon.common.GameImpl;
-import frs.hotgammon.variants.BaseTrunChangeValidator;
-import frs.hotgammon.variants.BaseWinnerValidator;
-import frs.hotgammon.variants.BetaMoveValidator;
+import frs.hotgammon.variants.movevalidators.CompleteMoveValidator;
+import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
+import frs.hotgammon.variants.winnerdeterminers.SixMoveWinnerDeterminer;
 
 public class BetaMonTests {
-
-	Game game;
 	
+	private GameImpl game;
+
 	@Before
-	public void setup() {
-		game = new GameImpl(new BetaMoveValidator(), new BaseWinnerValidator(), new BaseTrunChangeValidator());
+	public void setup() { 
+		game = new GameImpl(new CompleteMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer());
 		game.newGame();
 	}
-	
-	@Test
-	public void illegalBlackMove() {
-		game.nextTurn();
-		assertEquals("can not move black in wrong direction", false, game.move(Location.R12, Location.R10));
-
-	}
 
 	@Test
-	public void illegalRedMove() {
-		game.nextTurn();
-		game.nextTurn();
-		
-		assertEquals("can not move black in wrong direction", false, game.move(Location.R8, Location.R10));
-	}
-
-	@Test
-	public void shouldbeAbleToMove1OnTurnOne() {
-
-		game.nextTurn();
-		
-		assertEquals(false, game.move(Location.R1, Location.R5));
-		
-		assertEquals(true, game.move(Location.R1, Location.R2));
-		
-		
-	}
-
-	@Test
-	public void shouldbeAbleToMove2OnTurnOne() {
-
-		game.nextTurn();
-		assertEquals(true, game.move(Location.R1, Location.R3));
-	}
-
-	@Test
-	public void shouldMove1AfterMove2() {
-
-		game.nextTurn();
-		assertEquals(true, game.move(Location.R1, Location.R3));
-		
-		assertEquals(true, game.move(Location.R1, Location.R2));
-		
-	}
-
-	@Test
-	public void shouldResetDie() {
-		game.nextTurn();
-		game.nextTurn();
-		game.nextTurn();
-		game.nextTurn();
-		
-		game.newGame();
-		
-		game.nextTurn();
-		assertTrue(game.move(Location.R1, Location.R2));
-		assertTrue(game.move(Location.R1, Location.R3));
-	}
-
-
-
-	@Test
-	public void shouldBeInOrderOfDice() {
-
-		game.nextTurn();
-
-		assertTrue(game.move(Location.B8, Location.B7));
-		assertTrue(game.move(Location.R12, Location.B11));
-		
-		game.nextTurn();
-		
-		assertTrue(game.move(Location.R8, Location.R5));
-		assertTrue(game.move(Location.B12, Location.R9));
-		
-		game.nextTurn();
-		
-		assertTrue(game.move(Location.B8, Location.B3));
-		assertTrue(game.move(Location.R1, Location.R7));
-	}
-	@Test
-	public void diceShouldBe6and5() {
-
-		game.nextTurn();
-		game.nextTurn();
-		game.nextTurn();
-		
-		assertEquals("Should be 6", 6, game.diceValuesLeft()[0]);
-		assertEquals("Should be 5", 5, game.diceValuesLeft()[1]);
-		
-	}
-
-	
-	@Test
-	public void diceShouldBe4and3() {
-
-		game.nextTurn();
-		game.nextTurn();
-		
-		assertEquals("Should be 4", 4, game.diceValuesLeft()[0]);
-		assertEquals("Should be 3", 3, game.diceValuesLeft()[1]);
-		
-	}
-
-	@Test
-	public void diceShouldBe2and1() {
-
-		game.nextTurn();
-		
-		assertEquals("Should be 2", 2, game.diceValuesLeft()[0]);
-		assertEquals("Should be 1", 1, game.diceValuesLeft()[1]);
-		
-	}
-
-
-	@Test
-	public void canNotMoveSelfToBar() {
-
-		game.configure(new Placement[] { 
-				
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R2),
-
-		});
-		game.nextTurn();
-
-		assertTrue(game.move(Location.R1, Location.R2));
-		
-		assertTrue(game.getColor(Location.R2) == Color.BLACK);
-		assertTrue(game.getCount(Location.B_BAR) == 0);
-		assertTrue(game.getCount(Location.R_BAR) == 0);
-		
-		assertTrue(game.getCount(Location.R1) == 1);
-		assertTrue(game.getCount(Location.R2) == 2);
-
-	}
-
-
-	@Test
-	public void canNotMoveToBarWhenMoreThan1() {
-		game.configure(new Placement[] { 
-				
-				new Placement(Color.RED, Location.R2),
-				new Placement(Color.RED, Location.R2),
-				new Placement(Color.BLACK, Location.R1),
-		});
-		game.nextTurn();
-		assertFalse(game.move(Location.R1, Location.R2));
-	}
-
-
-	@Test
-	public void canNotMakeMoveToBar() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.BLACK, Location.B1),
-		});
-		game.nextTurn();
-		
-		assertEquals(false, game.move(Location.B1, Location.R_BAR));
-		
-	}
-
-	@Test
-	public void moveToCorrectInnerTable() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.RED, Location.R_BAR),
-				
-		});
-
-		game.nextTurn();
-		game.nextTurn();
-		
-		assertTrue(game.move(Location.R_BAR, Location.B3));
-	}
-
-
-	@Test
-	public void illegalBarMove() {
-		game.configure(new Placement[] { 
-				new Placement(Color.RED, Location.R_BAR),
-				new Placement(Color.BLACK, Location.B3),	
-		});
-
-		game.nextTurn();
-		game.nextTurn();
-		assertFalse(game.move(Location.R_BAR, Location.B3));
-	}
-
-	
-	@Test
-	public void shouldMoveBlackCheckerToTheBarWhenRedMoves() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.BLACK, Location.B4),
-				new Placement(Color.RED, Location.B1),
-				new Placement(Color.RED, Location.B1)}
-				);
-
+	public void redShouldOnlyMoveTowardRedInnerTable() {
 		game.nextTurn();
 		game.nextTurn();
 		assertTrue(game.move(Location.B1, Location.B4));
-		
-		assertEquals(1,game.getCount(Location.B4) );
-		assertTrue(game.getColor(Location.B4) == Color.RED);
-		assertEquals(1,game.getCount(Location.B_BAR) );
+		assertFalse(game.move(Location.B4,  Location.B1));
 	}
-
 	@Test
-	public void shouldMoveRedCheckerToTheBarWhenBlackMoves() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.RED, Location.R2),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R1),
-		});
+	public void blackShouldOnlyMoveTowardBlackInnerTable() {
 		game.nextTurn();
-
-		assertTrue(game.move(Location.R1, Location.R2));
-		assertTrue(game.getCount(Location.R1) == 1);
-		assertTrue(game.getCount(Location.R2) == 1);
-		assertTrue(game.getColor(Location.R2) == Color.BLACK);
-		assertTrue(game.getCount(Location.B_BAR) == 0);
-		assertTrue(game.getCount(Location.R_BAR) == 1);
-
+		assertTrue(game.move(Location.R1,  Location.R3));
+		assertFalse(game.move(Location.R3,  Location.R1));		
 	}
 	
 	@Test
-	public void movingToBarIncreasesNumberOfCheckersInThisBarBy1() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.RED, Location.R2),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.RED, Location.R_BAR)	
+	public void shouldReportTwoDieLeftBeforeMove() {
+		game.nextTurn();
+		assertEquals(2, game.diceValuesLeft().length);
+	}
+	
+	@Test 
+	public void shouldReportOneDieLeftAfterSingleMove() {
+		game.nextTurn();
+		assertTrue(game.move(Location.R1,  Location.R3));
+		assertEquals(1, game.diceValuesLeft().length);		
+	}
+	
+	@Test 
+	public void shouldReportZeroDieLeftAfterSingleMove() {
+		game.nextTurn();
+		assertTrue(game.move(Location.R1,  Location.R3));
+		assertTrue(game.move(Location.R3,  Location.R4));	
+		assertEquals(0, game.diceValuesLeft().length);		
+	}
+	
+	@Test
+	public void moveDistanceShouldEqualRoll() {
+		game.nextTurn();
+		int[] roll = game.diceValuesLeft();
+		assertTrue(roll.length ==2);
+		Location to = Location.findLocation(game.getPlayerInTurn(), Location.R1, roll[0]);
+		assertTrue(game.move(Location.R1, to));
+	}
+	
+	@Test
+	public void shouldNotBeAbleToUseSameDieTwice() {
+		game.nextTurn();
+		assertTrue(game.move(Location.R1,  Location.R3));
+		assertFalse(game.move(Location.R3,  Location.R5));	
+	}
+	
+	@Test 
+	public void shouldSendRedBlotToBar() {
+		game.configure( null);
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2)
 		});
 		game.nextTurn();
-		assertEquals("should be 1 ", 1, game.getCount(Location.R2));
-
+		int prevCountRedBar = game.getCount(Location.R_BAR);
 		assertTrue(game.move(Location.R1, Location.R2));
+		assertTrue(Color.BLACK == game.getColor(Location.R2));
+		assertEquals(1, game.getCount(Location.R2));
+		assertEquals(prevCountRedBar+1, game.getCount(Location.R_BAR));
 		
-		assertEquals("should be 2 ", 2, game.getCount(Location.R_BAR));
-
 	}
+	
+	@Test 
+	public void shouldSendBlackBlotToBar() {
+	
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B4)
+		});
+		game.nextTurn();
+		game.nextTurn(); // Will generate 3,4
+		int prevCountRedBar = game.getCount(Location.B_BAR);
+		assertTrue(game.move(Location.B1, Location.B4));
+		assertTrue(Color.RED == game.getColor(Location.B4));
+		assertEquals(1, game.getCount(Location.B4));
+		assertEquals(prevCountRedBar+1, game.getCount(Location.B_BAR));
+		
+		
+	}
+	
+	@Test
+	public void shouldRejectRedMoveDueToBlockedPoint() {
+	
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B4),
+				new GameImpl.Placement(Color.BLACK, Location.B4)
+		});
+		game.nextTurn();
+		game.nextTurn();
+		assertFalse(game.move(Location.B1,  Location.B4));
+	}
+	@Test
+	public void shouldRejectBlackMoveDueToBlockedPoint() {
 
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R4),
+				new GameImpl.Placement(Color.RED, Location.R4)
+		});
+		game.nextTurn();
+
+		assertFalse(game.move(Location.R1,  Location.R4));
+	}
+	
+	@Test
+	public void shouldMoveBlackOffBarToRedInnerTable() {
+	
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.B_BAR),
+				new GameImpl.Placement(Color.BLACK, Location.B_BAR)
+
+		});
+		game.nextTurn();
+		assertTrue(game.move(Location.B_BAR,  Location.R1));
+		assertTrue(game.move(Location.B_BAR,  Location.R2));
+		assertEquals(0, game.getCount(Location.B_BAR));
+		
+	}
+	
+	@Test
+	public void shouldNotMoveBlackOffBarToRedInnerTable() {
+	
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.B_BAR),
+				new GameImpl.Placement(Color.BLACK, Location.B_BAR),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R4),
+				new GameImpl.Placement(Color.RED, Location.R4),
+				new GameImpl.Placement(Color.RED, Location.R5),
+				new GameImpl.Placement(Color.RED, Location.R5),
+				new GameImpl.Placement(Color.RED, Location.R6),
+				new GameImpl.Placement(Color.RED, Location.R6)
+
+		});
+		game.nextTurn();
+		assertFalse(game.move(Location.B_BAR,  Location.R1));
+		assertFalse(game.move(Location.B_BAR,  Location.R2));
+		assertEquals(2, game.getCount(Location.B_BAR));
+		
+	}
+	
+	@Test
+	public void shouldNotMoveOtherBlackWhenBlackOnBar() {
+
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.B_BAR),
+				new GameImpl.Placement(Color.BLACK, Location.B8)
+
+		});
+		game.nextTurn();
+		assertFalse(game.move(Location.B8,  Location.B9));
+		
+	}
+	
+	@Test
+	public void shouldNotMoveOtherRedWhenRedOnBar() {
+
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.R_BAR),
+				new GameImpl.Placement(Color.RED, Location.R8)
+
+		});
+		game.nextTurn();
+		game.nextTurn();
+		assertFalse(game.move(Location.B8,  Location.B11));
+		
+	}
+	
+	@Test
+	public void redShouldBearOffWithAllCheckersInInnerTable() {
+
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R4),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R4)
+		});
+	
+		game.nextTurn();
+		game.nextTurn();
+		assertTrue(game.move(Location.R3, Location.R_BEAR_OFF));
+		assertTrue(game.move(Location.R4, Location.R_BEAR_OFF));
+	}
+	
+	@Test
+	public void redShouldNotBearOffWithCheckersNotInInnerTable() {
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R4),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R3),
+				new GameImpl.Placement(Color.RED, Location.R1),
+				new GameImpl.Placement(Color.RED, Location.R2),
+				new GameImpl.Placement(Color.RED, Location.R10)
+		});
+	
+		game.nextTurn();
+		game.nextTurn();
+		assertFalse(game.move(Location.R3, Location.R_BEAR_OFF));
+
+		
+	}
+	
+	@Test
+	public void blackShouldBearOffWithAllCheckersInInnerTable() {
+
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B4),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B4)
+		});
+	
+	
+		game.nextTurn();
+		assertTrue(game.move(Location.B2, Location.B_BEAR_OFF));
+	}
+	
+	@Test
+	public void blackShouldNotBearOffWithCheckersNotInInnerTable() {
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B4),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B3),
+				new GameImpl.Placement(Color.BLACK, Location.B1),
+				new GameImpl.Placement(Color.BLACK, Location.B2),
+				new GameImpl.Placement(Color.BLACK, Location.B10)
+		});
+	
+		game.nextTurn();
+		assertFalse(game.move(Location.B2, Location.B_BEAR_OFF));
+	}
+	
+	@Test
+	public void shouldBearOffWithLessThanDieIfNoOtherMoveAvailable() {
+		game.configure( new GameImpl.Placement[] {
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R_BEAR_OFF),
+				new GameImpl.Placement(Color.RED, Location.R2)
+		});
+	
+		game.nextTurn();
+		game.nextTurn();
+		assertTrue(game.getPlayerInTurn() == Color.RED);
+		assertTrue(game.move(Location.R2, Location.R_BEAR_OFF));		
+	}
 }
-

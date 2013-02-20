@@ -1,4 +1,4 @@
-package frs.hotgammon.tests;
+package frs.hotgammon.testsMine;
 
 import static org.junit.Assert.*;
 
@@ -10,9 +10,9 @@ import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.common.GameImpl;
-import frs.hotgammon.variants.AlphaMoveValidator;
-import frs.hotgammon.variants.BaseTrunChangeValidator;
-import frs.hotgammon.variants.BaseWinnerValidator;
+import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
+import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
+import frs.hotgammon.variants.winnerdeterminers.SixMoveWinnerDeterminer;
 
 public class AlphaMonTests {
 	
@@ -20,7 +20,7 @@ public class AlphaMonTests {
 
 	@Before
 	public void setUp() {
-		game = new GameImpl(new AlphaMoveValidator(), new BaseWinnerValidator(), new BaseTrunChangeValidator());
+		game = new GameImpl(new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer());
 		game.newGame();
 	}
 

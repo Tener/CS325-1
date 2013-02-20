@@ -1,10 +1,10 @@
-package frs.hotgammon.variants;
+package frs.hotgammon.variants.turndeterminers;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
-import frs.hotgammon.TurnChangeValidator;
+import frs.hotgammon.TurnDeterminer;
 
-public class DelatTurnChangeValidator implements TurnChangeValidator {
+public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
 
 	Game game; 
 	

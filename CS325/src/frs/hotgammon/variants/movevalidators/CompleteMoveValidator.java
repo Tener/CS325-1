@@ -1,4 +1,4 @@
-package frs.hotgammon.variants;
+package frs.hotgammon.variants.movevalidators;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
@@ -6,11 +6,11 @@ import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.common.BoardImpl;
 
-public class BetaMoveValidator implements MoveValidator {
+public class CompleteMoveValidator implements MoveValidator {
 	
 	private Game game;
 
-	public BetaMoveValidator() {
+	public CompleteMoveValidator() {
 
 	}
 
@@ -20,9 +20,12 @@ public class BetaMoveValidator implements MoveValidator {
 		this.game = game;
 	}
 	
-	private boolean checkerToEmptyPoint(Location to){
-		if( game.getColor(to) == Color.NONE && game.getCount(to) == 0){
-			return true;
+	private boolean checkerMovedToEmptyPoint(Location to){
+		if( game.getColor(to) == Color.NONE ){
+			if (game.getCount(to) == 0){
+				return true;
+			}
+			return false;
 		}
 		
 		return false;
@@ -34,26 +37,13 @@ public class BetaMoveValidator implements MoveValidator {
 		}
 		return false;
 	}
-	private boolean legalRedDirection(Location from, Location to) {
-		
-		if(game.getPlayerInTurn() == Color.RED && Location.distance(from, to) < 0){
-			return true;
-		}
-		return false;
-	}
-
-	private boolean legalBlackDirection(Location from, Location to) {
-		
-		if(game.getPlayerInTurn() == Color.BLACK && Location.distance(from, to) > 0){
-			return true;
-		}
-		return false;
-	}
 
 	private boolean legalDirectionMove(Location from, Location to) {
 
-		if (legalRedDirection(from, to) || legalBlackDirection(
-				from, to)){
+		if(game.getPlayerInTurn() == Color.RED && Location.distance(from, to) < 0){
+			return true;
+		}
+		if(game.getPlayerInTurn() == Color.BLACK && Location.distance(from, to) > 0){
 			return true;
 		}
 		return false;
@@ -62,14 +52,14 @@ public class BetaMoveValidator implements MoveValidator {
 	
 	private boolean moveToLegal(Location to){
 		
-		if(checkerToEmptyPoint(to) || sameColorPoint(to) || moveToPointWith1(to)){
+		if(checkerMovedToEmptyPoint(to) || sameColorPoint(to) || moveToPointWith1(to)){
 			return true;
 		}
 		return false;
 	}
 
 
-	public boolean distanceTravelledEqualsTheValueOfDieRolled(Location from,
+	public boolean distanceIsDieValue(Location from,
 			Location to) {
 
 		int distance = Location.distance(from, to);
@@ -98,27 +88,12 @@ public class BetaMoveValidator implements MoveValidator {
 		return true;
 	}
 
-	private boolean blackCheckerInBar() {
-		if (((BoardImpl) game.playingBoard()).getSquare(Location.B_BAR.ordinal()).pieces != 0 && game.getPlayerInTurn() == Color.BLACK){
-			return true;
-		}
-		return false;
-	}
-
-	private boolean redCheckerInBar() {
-		
-		if (((BoardImpl) game.playingBoard()).getSquare(Location.R_BAR.ordinal()).pieces != 0 && game.getPlayerInTurn() == Color.RED){
-			return true;
-		}
-		return false;
-	}
-
 	private boolean checkerInBar() {
 		
-		if( blackCheckerInBar()){
+		if (( game.getCount(Location.B_BAR) != 0 && game.getPlayerInTurn() == Color.BLACK)){
 			return true;
 		}
-		if( redCheckerInBar()){
+		if ((game.getCount(Location.R_BAR) != 0 && game.getPlayerInTurn() == Color.RED)){
 			return true;
 		}
 		
@@ -132,35 +107,23 @@ public class BetaMoveValidator implements MoveValidator {
 		return false;
 	}
 
-	private boolean moveToInnerTableBlack(Location to){
-
-		if(game.getPlayerInTurn()==Color.BLACK && BoardImpl.redInnerTable.contains(to)){
-			return true;
-		}
-		return false;
-	}
-
-	private boolean moveToInnerTableRed(Location to){
+	private boolean toInnerTable(Location to){
 
 		if (game.getPlayerInTurn()==Color.RED && BoardImpl.blackInnerTable.contains(to)){
 			return true;
 		}
-		return false;
-	}
-
-	private boolean toInnerTable(Location to){
-
-		if (moveToInnerTableBlack(to) || moveToInnerTableRed(to)){
+		
+		if(game.getPlayerInTurn()==Color.BLACK && BoardImpl.redInnerTable.contains(to)){
 			return true;
 		}
+		
 		return false;
 		
 	}
 	
 	@Override
 	public boolean isValid(Location from, Location to) {
-
-		return (moveToLegal(to)) && legalDirectionMove(from, to) && (movesToBar(to)) && (moveDirectToBarIsIllegal(to)) && distanceTravelledEqualsTheValueOfDieRolled(from, to);
+		return (moveToLegal(to)) && legalDirectionMove(from, to) && (movesToBar(to)) && (moveDirectToBarIsIllegal(to)) && distanceIsDieValue(from, to);
 				
 	}
 }

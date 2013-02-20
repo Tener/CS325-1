@@ -1,6 +1,6 @@
 package frs.hotgammon;
 
-public interface TurnChangeValidator {
+public interface TurnDeterminer {
 
 	public Color nextTurnChangePlayer(Color colorInTurn);
 	public void setGame(Game game);

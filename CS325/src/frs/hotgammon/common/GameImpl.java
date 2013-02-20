@@ -7,9 +7,9 @@ import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
-import frs.hotgammon.Placement;
-import frs.hotgammon.TurnChangeValidator;
-import frs.hotgammon.WinnerValidator;
+import frs.hotgammon.common.GameImpl.Placement;
+import frs.hotgammon.TurnDeterminer;
+import frs.hotgammon.WinnerDeterminer;
 
 
 /**
@@ -34,10 +34,10 @@ public class GameImpl implements Game {
 
 	public Game game;
 	private MoveValidator validator;
-	private WinnerValidator winnerValidator;
-	private TurnChangeValidator turnChangeValidator;
+	private WinnerDeterminer winnerValidator;
+	private TurnDeterminer turnChangeValidator;
 
-	public GameImpl(MoveValidator validator, WinnerValidator winnerValidator, TurnChangeValidator turnChangeValidator) {
+	public GameImpl(MoveValidator validator, WinnerDeterminer winnerValidator, TurnDeterminer turnChangeValidator) {
 		this.validator = validator;
 		this.validator.setGame(this);
 		this.winnerValidator = winnerValidator;
@@ -116,15 +116,15 @@ public class GameImpl implements Game {
 			  Color playerBarColor = this.getColor(to);
 				Location bar = playerBarColor == Color.RED ? Location.R_BAR : Location.B_BAR;
 				
-				int tempFrom  = board.getSquare(from.ordinal()).pieces;
-				  int tempBar = board.getSquare(bar.ordinal()).pieces;
+				int tempFrom  = board.returnPoint(from.ordinal()).checkers;
+				  int tempBar = board.returnPoint(bar.ordinal()).checkers;
 						 
-				  board.getSquare(from.ordinal()).pieces = tempFrom - 1;
-				  board.getSquare(to.ordinal()).player = playerColor;
-				  board.getSquare(bar.ordinal()).pieces = tempBar + 1;
+				  board.returnPoint(from.ordinal()).checkers = tempFrom - 1;
+				  board.returnPoint(to.ordinal()).playerInTurn = playerColor;
+				  board.returnPoint(bar.ordinal()).checkers = tempBar + 1;
 						 
-				  if(board.getSquare(from.ordinal()).pieces == 0){
-					  board.getSquare(from.ordinal()).player = Color.NONE;
+				  if(board.returnPoint(from.ordinal()).checkers == 0){
+					  board.returnPoint(from.ordinal()).playerInTurn = Color.NONE;
 				  }
 						 
 				  currentDiceIndex = currentDiceIndex - 1;
@@ -132,18 +132,18 @@ public class GameImpl implements Game {
 				  return true;
 			}
 		  
-		  int tempFrom  = board.getSquare(from.ordinal()).pieces;
-		  int tempTo = board.getSquare(to.ordinal()).pieces;
+		  int tempFrom  = board.returnPoint(from.ordinal()).checkers;
+		  int tempTo = board.returnPoint(to.ordinal()).checkers;
 				 
-		  if(board.getSquare(to.ordinal()).player == Color.NONE){
-			  board.getSquare(to.ordinal()).player = board.getSquare(from.ordinal()).player;
+		  if(board.returnPoint(to.ordinal()).playerInTurn == Color.NONE){
+			  board.returnPoint(to.ordinal()).playerInTurn = board.returnPoint(from.ordinal()).playerInTurn;
 		  }
 				 
-		  board.getSquare(from.ordinal()).pieces = tempFrom - 1;
-		  board.getSquare(to.ordinal()).pieces = tempTo + 1;
+		  board.returnPoint(from.ordinal()).checkers = tempFrom - 1;
+		  board.returnPoint(to.ordinal()).checkers = tempTo + 1;
 				 
-		  if(board.getSquare(from.ordinal()).pieces == 0){
-			  board.getSquare(from.ordinal()).player = Color.NONE;
+		  if(board.returnPoint(from.ordinal()).checkers == 0){
+			  board.returnPoint(from.ordinal()).playerInTurn = Color.NONE;
 		  }
 				 
 		  currentDiceIndex = currentDiceIndex - 1;
@@ -200,29 +200,35 @@ public class GameImpl implements Game {
 	public Color getColor(Location location) {
 
 		
-		return board.getSquare(location.ordinal()).player;
+		return board.returnPoint(location.ordinal()).playerInTurn;
 
 	}
 
 	public int getCount(Location location) {
-		return board.getSquare(location.ordinal()).pieces;
+		return board.returnPoint(location.ordinal()).checkers;
 
 	}
 
 
-	@Override
 	public Board playingBoard() {
 		// TODO Auto-generated method stub
 		return board;
 	}
-	
+	static public class Placement {
+		public Location location;
+		public Color	player;
+		public Placement(Color player, Location location) {
+			this.player = player;
+			this.location = location;
+		}
+	}
+
 	public void configure(Placement[] placements) {
-
-		board = new BoardImpl(28);
-
+		if (placements == null || placements.length == 0) {			
+			return;
+		}
 		for (int i = 0; i < placements.length; i++) {
-			board.put(placements[i].player, placements[i].location.ordinal());
-
+			board.put(placements[i].player, placements[i].location.ordinal());	
 		}
 	}
 }

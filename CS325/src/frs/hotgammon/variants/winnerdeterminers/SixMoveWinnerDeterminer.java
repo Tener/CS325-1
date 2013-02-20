@@ -1,10 +1,10 @@
-package frs.hotgammon.variants;
+package frs.hotgammon.variants.winnerdeterminers;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
-import frs.hotgammon.WinnerValidator;
+import frs.hotgammon.WinnerDeterminer;
 
-public class BaseWinnerValidator implements WinnerValidator{
+public class SixMoveWinnerDeterminer implements WinnerDeterminer{
 
 	Game game;
 	int turnsMade;

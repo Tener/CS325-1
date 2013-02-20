@@ -1,14 +1,14 @@
-package frs.hotgammon.variants;
+package frs.hotgammon.variants.movevalidators;
 
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
 
-public class AlphaMoveValidator implements MoveValidator{
+public class SimpleMoveValidator implements MoveValidator{
 
 	private Game game;
-	public AlphaMoveValidator(){
+	public SimpleMoveValidator(){
 	}
 	@Override
 	public boolean isValid(Location from, Location to) {
