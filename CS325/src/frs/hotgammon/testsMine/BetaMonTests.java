@@ -68,39 +68,24 @@ public class BetaMonTests {
 		
 	}
 
-	@Test
-	public void shouldResetDie() {
-		game.nextTurn();
-		game.nextTurn();
-		game.nextTurn();
-		game.nextTurn();
-		
-		game.newGame();
-		
-		game.nextTurn();
-		assertTrue(game.move(Location.R1, Location.R2));
-		assertTrue(game.move(Location.R1, Location.R3));
-	}
-
-
 
 	@Test
 	public void shouldBeInOrderOfDice() {
 
 		game.nextTurn();
 
-		assertTrue(game.move(Location.B8, Location.B7));
-		assertTrue(game.move(Location.R12, Location.B11));
+		assertEquals(true, game.move(Location.B8, Location.B7));
+		assertEquals(true, game.move(Location.R12, Location.B11));
 		
 		game.nextTurn();
 		
-		assertTrue(game.move(Location.R8, Location.R5));
-		assertTrue(game.move(Location.B12, Location.R9));
+		assertEquals(true, game.move(Location.R8, Location.R5));
+		assertEquals(true, game.move(Location.B12, Location.R9));
 		
 		game.nextTurn();
 		
-		assertTrue(game.move(Location.B8, Location.B3));
-		assertTrue(game.move(Location.R1, Location.R7));
+		assertEquals(true, game.move(Location.B8, Location.B3));
+		assertEquals(true, game.move(Location.R1, Location.R7));
 	}
 	@Test
 	public void diceShouldBe6and5() {
@@ -138,25 +123,23 @@ public class BetaMonTests {
 
 
 	@Test
-	public void canNotMoveSelfToBar() {
+	public void shouldNotMoveSelfToBar() {
 
 		game.configure(new Placement[] { 
 				
-				new Placement(Color.BLACK, Location.R1),
+				
 				new Placement(Color.BLACK, Location.R1),
 				new Placement(Color.BLACK, Location.R2),
 
 		});
 		game.nextTurn();
 
-		assertTrue(game.move(Location.R1, Location.R2));
+		assertEquals(true, game.move(Location.R1, Location.R2));
 		
-		assertTrue(game.getColor(Location.R2) == Color.BLACK);
-		assertTrue(game.getCount(Location.B_BAR) == 0);
-		assertTrue(game.getCount(Location.R_BAR) == 0);
 		
-		assertTrue(game.getCount(Location.R1) == 1);
-		assertTrue(game.getCount(Location.R2) == 2);
+		assertEquals(0, game.getCount(Location.B_BAR));
+		
+		
 
 	}
 
@@ -167,24 +150,17 @@ public class BetaMonTests {
 				
 				new Placement(Color.RED, Location.R2),
 				new Placement(Color.RED, Location.R2),
+				new Placement(Color.RED, Location.R2),
+				new Placement(Color.RED, Location.R2),
+				new Placement(Color.RED, Location.R2),
+				new Placement(Color.RED, Location.R2),
+				new Placement(Color.RED, Location.R2),
 				new Placement(Color.BLACK, Location.R1),
 		});
 		game.nextTurn();
-		assertFalse(game.move(Location.R1, Location.R2));
+		assertEquals(false, game.move(Location.R1, Location.R2));
 	}
 
-
-	@Test
-	public void canNotMakeMoveToBar() {
-
-		game.configure(new Placement[] { 
-				new Placement(Color.BLACK, Location.B1),
-		});
-		game.nextTurn();
-		
-		assertEquals(false, game.move(Location.B1, Location.R_BAR));
-		
-	}
 
 	@Test
 	public void moveToCorrectInnerTable() {
@@ -197,38 +173,27 @@ public class BetaMonTests {
 		game.nextTurn();
 		game.nextTurn();
 		
-		assertTrue(game.move(Location.R_BAR, Location.B3));
+		assertEquals(true, game.move(Location.R_BAR, Location.B3));
 	}
-
-
-	@Test
-	public void illegalBarMove() {
-		game.configure(new Placement[] { 
-				new Placement(Color.RED, Location.R_BAR),
-				new Placement(Color.BLACK, Location.B3),	
-		});
-
-		game.nextTurn();
-		game.nextTurn();
-		assertFalse(game.move(Location.R_BAR, Location.B3));
-	}
-
 	
 	@Test
 	public void shouldMoveBlackCheckerToTheBarWhenRedMoves() {
 
 		game.configure(new Placement[] { 
-				new Placement(Color.BLACK, Location.B4),
+				new Placement(Color.BLACK, Location.B3),
 				new Placement(Color.RED, Location.B1),
-				new Placement(Color.RED, Location.B1)}
+				new Placement(Color.RED, Location.B1),
+				new Placement(Color.RED, Location.B1),
+				new Placement(Color.RED, Location.B1)
+		}
 				);
 
 		game.nextTurn();
 		game.nextTurn();
-		assertTrue(game.move(Location.B1, Location.B4));
+		assertEquals(true, game.move(Location.B1, Location.B3));
 		
-		assertEquals(1,game.getCount(Location.B4) );
-		assertTrue(game.getColor(Location.B4) == Color.RED);
+		assertEquals(1,game.getCount(Location.B3) );
+		assertEquals(Color.RED, game.getColor(Location.B3));
 		assertEquals(1,game.getCount(Location.B_BAR) );
 	}
 
@@ -239,15 +204,15 @@ public class BetaMonTests {
 				new Placement(Color.RED, Location.R2),
 				new Placement(Color.BLACK, Location.R1),
 				new Placement(Color.BLACK, Location.R1),
+				new Placement(Color.BLACK, Location.R1),
+				new Placement(Color.BLACK, Location.R1)
 		});
 		game.nextTurn();
 
-		assertTrue(game.move(Location.R1, Location.R2));
-		assertTrue(game.getCount(Location.R1) == 1);
-		assertTrue(game.getCount(Location.R2) == 1);
-		assertTrue(game.getColor(Location.R2) == Color.BLACK);
-		assertTrue(game.getCount(Location.B_BAR) == 0);
-		assertTrue(game.getCount(Location.R_BAR) == 1);
+		assertEquals(true, game.move(Location.R1, Location.R2));
+	
+		
+		assertEquals(1, game.getCount(Location.R_BAR));
 
 	}
 	
@@ -257,15 +222,17 @@ public class BetaMonTests {
 		game.configure(new Placement[] { 
 				new Placement(Color.RED, Location.R2),
 				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.BLACK, Location.R1),
-				new Placement(Color.RED, Location.R_BAR)	
+				new Placement(Color.RED, Location.R_BAR),
+				new Placement(Color.RED, Location.R_BAR),
+				new Placement(Color.RED, Location.R_BAR),
+				new Placement(Color.RED, Location.R_BAR)
 		});
 		game.nextTurn();
 		assertEquals("should be 1 ", 1, game.getCount(Location.R2));
 
-		assertTrue(game.move(Location.R1, Location.R2));
+		assertEquals(true, game.move(Location.R1, Location.R2));
 		
-		assertEquals("should be 2 ", 2, game.getCount(Location.R_BAR));
+		assertEquals("should be 5 ", 5, game.getCount(Location.R_BAR));
 
 	}
 
