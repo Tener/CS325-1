@@ -49,11 +49,4 @@ public class BoardTests {
 		assertEquals(1, board.returnPoint(Location.R1.ordinal()).checkers);
 	}
 
-	@Test
-	public void shouldBeAbleToRemovePlayerOfCorrectColor() {
-		board.put(Color.BLACK, Location.R1.ordinal());
-		
-		assertEquals(0, board.returnPoint(Location.R1.ordinal()).checkers);
-	}
-
 }

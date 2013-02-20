@@ -108,14 +108,19 @@ public class CompleteMoveValidator implements MoveValidator {
 	}
 
 	private boolean toInnerTable(Location to){
+		
+		for (int i = 0; i < 6; i++){
 
-		if (game.getPlayerInTurn()==Color.RED && BoardImpl.blackInnerTable.contains(to)){
+		if (game.getPlayerInTurn()==Color.RED && BoardImpl.BLACK_TABLE[i] == to){
 			return true;
+		}
 		}
 		
-		if(game.getPlayerInTurn()==Color.BLACK && BoardImpl.redInnerTable.contains(to)){
+		for (int i = 0; i < 6; i++){
+		if(game.getPlayerInTurn()==Color.BLACK && BoardImpl.RED_TABLE[i] == to){
 			return true;
 		}
+	}
 		
 		return false;
 		

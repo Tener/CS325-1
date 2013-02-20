@@ -33,7 +33,7 @@ public class DeltaMonTests {
 		assertEquals("THird time color is black ", Color.RED, game.getPlayerInTurn());
 	}
 	
-	@Test
+	@Test 
 	public void shouldGiveExtraTurn() {
 		game.nextTurn();
 		assertEquals("First time color is black ", Color.BLACK, game.getPlayerInTurn());

@@ -80,7 +80,7 @@ public class GammaMonTests {
 				new Placement(Color.RED, Location.R_BEAR_OFF),
 				new Placement(Color.RED, Location.R_BEAR_OFF),
 				new Placement(Color.RED, Location.R_BEAR_OFF)}
-				);
+				); 
 		game.nextTurn();
 		
 		assertEquals("Should not red ", Color.RED, game.winner());
