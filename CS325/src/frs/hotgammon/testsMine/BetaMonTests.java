@@ -10,6 +10,7 @@ import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.common.GameImpl.Placement;
 import frs.hotgammon.common.GameImpl;
+import frs.hotgammon.variants.factory.BetaFactory;
 import frs.hotgammon.variants.movevalidators.CompleteMoveValidator;
 import frs.hotgammon.variants.turndeterminers.AlternatingTurnDeterminer;
 import frs.hotgammon.variants.winnerdeterminers.SixMoveWinnerDeterminer;
@@ -20,14 +21,14 @@ public class BetaMonTests {
 	
 	@Before
 	public void setup() {
-		game = new GameImpl(new CompleteMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer());
+		game = new GameImpl(new BetaFactory());
 		game.newGame();
 	}
 	
 	@Test
 	public void illegalBlackMove() {
 		game.nextTurn();
-		assertEquals("can not move black in wrong direction", false, game.move(Location.R12, Location.R10));
+		assertEquals("can not move black in wrong direction", false, game.move(Location.B8, Location.B10));
 
 	}
 
@@ -36,7 +37,7 @@ public class BetaMonTests {
 		game.nextTurn();
 		game.nextTurn();
 		
-		assertEquals("can not move black in wrong direction", false, game.move(Location.R8, Location.R10));
+		assertEquals("can not move black in wrong direction", false, game.move(Location.B12, Location.B10));
 	}
 
 	@Test

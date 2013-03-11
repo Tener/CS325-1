@@ -5,8 +5,10 @@ import java.util.HashMap;
 import frs.hotgammon.Board;
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
+import frs.hotgammon.HotgammonFactory;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
+import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.common.GameImpl.Placement;
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.WinnerDeterminer;
@@ -33,18 +35,22 @@ public class GameImpl implements Game {
 	public int currentDiceIndex;
 
 	public Game game;
-	private MoveValidator validator;
-	private WinnerDeterminer winnerValidator;
-	private TurnDeterminer turnChangeValidator;
-
-	public GameImpl(MoveValidator validator, WinnerDeterminer winnerValidator, TurnDeterminer turnChangeValidator) {
-		this.validator = validator;
-		this.validator.setGame(this);
-		this.winnerValidator = winnerValidator;
-		this.winnerValidator.setGame(this);
-		this.turnChangeValidator = turnChangeValidator;
-		this.turnChangeValidator.setGame(this);
+	
+	private HotgammonFactory factory;
+	
+	public GameImpl(HotgammonFactory factory) {
+		this.factory = factory;
+		this.factory.setFactory(this);
 	}
+
+//	public GameImpl(MoveValidator validator, WinnerDeterminer winnerValidator, TurnDeterminer turnChangeValidator) {
+//		this.validator = validator;
+//		this.validator.setGame(this);
+//		this.winnerValidator = winnerValidator;
+//		this.winnerValidator.setGame(this);
+//		this.turnChangeValidator = turnChangeValidator;
+//		this.turnChangeValidator.setGame(this);
+//	}
 
 	public void newGame() {
 
@@ -97,10 +103,11 @@ public class GameImpl implements Game {
 
 	public void nextTurn() {
 
-		colorInTurn = turnChangeValidator.nextTurnChangePlayer(colorInTurn);
-		winnerValidator.makeATurn();
+		colorInTurn = factory.getTurnDeterminer().nextTurnChangePlayer(colorInTurn, this);
+		factory.getWinnerDeterminer().makeATurn();
 		numberOfTurns++;
 		currentDice = diceThrown();
+		this.factory.setFactory(this);
 	}
 
 	public boolean move(Location from, Location to) { 
@@ -109,7 +116,7 @@ public class GameImpl implements Game {
 		  return false;
 	  }
 	  
-	  if( validator.isValid(from, to)){
+	  if( factory.getMoveValidator().isValid(from, to)){
 		  
 		  if (getCount(to) > 0 && getColor(to) != getPlayerInTurn()) {
 			  Color playerColor = this.getColor(from);
@@ -168,17 +175,8 @@ public class GameImpl implements Game {
 	public int[] diceThrown() {
 
 		currentDiceIndex = 2;
-		if (numberOfTurns % 3 == 1) {
-			currentDice = new int[] { 1, 2 };
-		}
-
-		if (numberOfTurns % 3 == 2) {
-			currentDice = new int[] { 3, 4 };
-		}
-
-		if (numberOfTurns % 3 == 0) {
-			currentDice = new int[] { 5, 6 };
-		}
+		
+		currentDice = factory.getRollDeterminer().diceThrown(this);
 
 		return currentDice;
 
@@ -194,7 +192,7 @@ public class GameImpl implements Game {
 
 	public Color winner() {
 
-		return winnerValidator.returnWinner();
+		return factory.getWinnerDeterminer().returnWinner();
 	}
 
 	public Color getColor(Location location) {

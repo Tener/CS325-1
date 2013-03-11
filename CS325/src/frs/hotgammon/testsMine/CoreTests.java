@@ -11,11 +11,16 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import frs.hotgammon.Color;
+import frs.hotgammon.HotgammonFactory;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.TurnDeterminer;
 import frs.hotgammon.WinnerDeterminer;
 import frs.hotgammon.common.GameImpl;
+import frs.hotgammon.variants.factory.AlphaFactory;
+import frs.hotgammon.variants.factory.BetaFactory;
+import frs.hotgammon.variants.factory.DeltaFactory;
+import frs.hotgammon.variants.factory.GammaFactory;
 import frs.hotgammon.variants.movevalidators.CompleteMoveValidator;
 import frs.hotgammon.variants.movevalidators.SimpleMoveValidator;
 import frs.hotgammon.variants.turndeterminers.AceyDeuceyTurnDeterminer;
@@ -28,8 +33,8 @@ public class CoreTests {
 
 	private frs.hotgammon.common.GameImpl game;
 
-	public CoreTests(MoveValidator validator, WinnerDeterminer winnerValidator, TurnDeterminer turnChangeValidator) {
-		game = new frs.hotgammon.common.GameImpl(validator, winnerValidator, turnChangeValidator);
+	public CoreTests(HotgammonFactory factory) {
+		game = new frs.hotgammon.common.GameImpl(factory);
 		game.newGame();
 
 	}
@@ -38,13 +43,13 @@ public class CoreTests {
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] { 
 				//Alpha
-				{ new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer() },
+				{ new AlphaFactory() },
 				//Beta
-				{ new CompleteMoveValidator(), new SixMoveWinnerDeterminer(), new AlternatingTurnDeterminer() },
+				{ new BetaFactory() },
 				//Gamma
-				{ new SimpleMoveValidator(), new BearOffWinnerDeterminer(), new AlternatingTurnDeterminer() },
+				{ new GammaFactory() },
 				//Delta
-				{ new SimpleMoveValidator(), new SixMoveWinnerDeterminer(), new AceyDeuceyTurnDeterminer() }
+				{ new DeltaFactory() }
 				};
 		return Arrays.asList(data);
 	}

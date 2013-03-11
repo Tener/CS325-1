@@ -4,10 +4,11 @@ import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
+import frs.hotgammon.common.GameImpl;
 
 public class SimpleMoveValidator implements MoveValidator{
 
-	private Game game;
+	private GameImpl game;
 	public SimpleMoveValidator(){
 	}
 	@Override
@@ -21,7 +22,7 @@ public class SimpleMoveValidator implements MoveValidator{
 		return false;
 	}
 	@Override
-	public void setGame(Game game) {
+	public void setGame(GameImpl game) {
 		this.game = game;
 		
 	}

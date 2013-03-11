@@ -5,16 +5,17 @@ import frs.hotgammon.Game;
 import frs.hotgammon.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.common.BoardImpl;
+import frs.hotgammon.common.GameImpl;
 
 public class CompleteMoveValidator implements MoveValidator {
 	
-	private Game game;
+	private GameImpl game;
 
 	public CompleteMoveValidator() {
 	}
 
 	@Override
-	public void setGame(Game game) {
+	public void setGame(GameImpl game) {
 		
 		this.game = game;
 	}

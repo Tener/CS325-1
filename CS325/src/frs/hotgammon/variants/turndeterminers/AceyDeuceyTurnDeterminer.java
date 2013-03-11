@@ -3,21 +3,22 @@ package frs.hotgammon.variants.turndeterminers;
 import frs.hotgammon.Color;
 import frs.hotgammon.Game;
 import frs.hotgammon.TurnDeterminer;
+import frs.hotgammon.common.GameImpl;
 
 public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
 
 	Game game; 
 	
 	@Override
-	public Color nextTurnChangePlayer(Color colorInTurn) {
+	public Color nextTurnChangePlayer(Color colorInTurn, GameImpl gameImpl) {
 		
 		final int DICE_ONE = 1;
 		final int DICE_TWO = 2;
-		
+		System.out.println("this is printing");
 		
 			
-			if((game.diceThrown()[0] == DICE_ONE) && (game.diceThrown()[1] == DICE_TWO)){
-				return game.getPlayerInTurn();
+			if((gameImpl.diceThrown()[0] == DICE_ONE) && (gameImpl.diceThrown()[1] == DICE_TWO)){
+				return gameImpl.getPlayerInTurn();
 			}
 		
 		
