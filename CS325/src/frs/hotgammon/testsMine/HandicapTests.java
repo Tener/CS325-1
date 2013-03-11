@@ -64,7 +64,7 @@ public class HandicapTests {
 
 		game.nextTurn();
 		game.nextTurn();
-		assertEquals(false, game.move(Location.B1, Location.B2));
+		assertEquals(false, game.move(Location.B1, Location.B2)); 
 		
 
 	}
