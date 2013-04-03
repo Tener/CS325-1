@@ -90,6 +90,13 @@ public  class SelectionTool extends AbstractTool implements Tool {
 
   public void mouseUp(MouseEvent e, int x, int y) {
     editor().drawing().unlock();
+    
+    System.out.println("X" + x);
+	System.out.println("Y" + y);
+	
+	e.getComponent();
+	System.out.println(e.getComponent());
+	System.out.println(draggedFigure);
 
     fChild.mouseUp(e, x, y);
     fChild = cachedNullTool;

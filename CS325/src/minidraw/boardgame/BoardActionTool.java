@@ -72,11 +72,15 @@ public class BoardActionTool extends AbstractTool {
   }
 
   public void mouseUp(MouseEvent e, int x, int y) {
+	  System.out.println("X" + x);
+	  System.out.println("Y" + y);
     // ask the associated board figure to perform its associated action based
     // upon the coordinates of mouse down and mouse up (move or click)
     if ( clickedFigure != null ) {
       boolean valid = clickedFigure.performAction(fStartX, fStartY, 
                                                   fLastX, fLastY);
+      System.out.println("X" + x);
+	  System.out.println("Y" + y);
       // if the figure's associate domain model tell the move is invalid
       // then move it back to its starting position.
       if ( ! valid && clickedFigure.isMobile() ) {
@@ -92,5 +96,8 @@ public class BoardActionTool extends AbstractTool {
     }
     clickedFigure = null;
     draggedFigure = null;
+    System.out.println("X" + x);
+	  System.out.println("Y" + y);
+    
   }
 }
