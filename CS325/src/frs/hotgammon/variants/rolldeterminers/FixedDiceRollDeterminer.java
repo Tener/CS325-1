@@ -1,6 +1,6 @@
 package frs.hotgammon.variants.rolldeterminers;
 
-import frs.hotgammon.Game;
+import frs.hotgammon.framework.Game;
 import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.common.GameImpl;
 

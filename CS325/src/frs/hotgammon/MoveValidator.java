@@ -1,6 +1,7 @@
 package frs.hotgammon;
 
 import frs.hotgammon.common.GameImpl;
+import frs.hotgammon.framework.Location;
 
 public interface MoveValidator {
 	

@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
-import frs.hotgammon.Location;
+import frs.hotgammon.framework.Color;
+import frs.hotgammon.framework.Game;
+import frs.hotgammon.framework.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.variants.factory.AlphaFactory;

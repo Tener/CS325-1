@@ -1,9 +1,4 @@
-package frs.hotgammon;
-
-import java.util.HashMap;
-
-import frs.hotgammon.common.BoardImpl;
-
+package frs.hotgammon.framework;
 
 /** This interface encapsulate all responsibilites of
     a Backgammon game. Please consult the book's
@@ -26,10 +21,9 @@ import frs.hotgammon.common.BoardImpl;
 
 public interface Game {
 
-  // == mutator methods ==//
+  // == mutator methods ==
 
-
-/** Reset the entire game to start from scratch. 
+  /** Reset the entire game to start from scratch. 
    * No player is in turn, and the game awaits a
    * call to nextTurn to start a game.
    */
@@ -51,7 +45,8 @@ public interface Game {
    * otherwise it is black that moves first.
    * 
    * PRECONDITION: The player in turn has indeed exhausted the
-   * his/her ability to make moves.
+   * his/her ability to make moves, i.e. this method
+   * can only be called if getNumberOfMovesLeft() returns 0.
    */
   public void nextTurn();
 
@@ -69,9 +64,9 @@ public interface Game {
   // accessor methods
 
   /** return the color of the player that is in turn i.e. is allowed
-   *  to make a move.
-   * @return the color of the player to move next. If no player is in
+   *  to make a move or roll the dice. If no player is in
    * turn (before the game is started), NONE is returned.
+   * @return the color of the player to move or roll next. 
    */
   public Color getPlayerInTurn();
 
@@ -122,4 +117,9 @@ public interface Game {
    */
   public int getCount(Location location);
   
+
+  /** add an observer to this game
+   * @param observer the observer to notify in case of state changes.
+   */
+  public void addObserver(GameObserver observer);
 }

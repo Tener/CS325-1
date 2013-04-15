@@ -1,6 +1,6 @@
 package frs.hotgammon.variants.factory;
 
-import frs.hotgammon.Game;
+import frs.hotgammon.framework.Game;
 import frs.hotgammon.HotgammonFactory;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.RollDeterminer;

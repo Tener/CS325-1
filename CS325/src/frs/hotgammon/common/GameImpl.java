@@ -3,10 +3,11 @@ package frs.hotgammon.common;
 import java.util.HashMap;
 
 import frs.hotgammon.Board;
-import frs.hotgammon.Color;
-import frs.hotgammon.Game;
+import frs.hotgammon.framework.Color;
+import frs.hotgammon.framework.Game;
+import frs.hotgammon.framework.GameObserver;
 import frs.hotgammon.HotgammonFactory;
-import frs.hotgammon.Location;
+import frs.hotgammon.framework.Location;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.common.GameImpl.Placement;
@@ -228,5 +229,11 @@ public class GameImpl implements Game {
 		for (int i = 0; i < placements.length; i++) {
 			board.put(placements[i].player, placements[i].location.ordinal());	
 		}
+	}
+
+	@Override
+	public void addObserver(GameObserver observer) {
+		// TODO Auto-generated method stub
+		
 	}
 }

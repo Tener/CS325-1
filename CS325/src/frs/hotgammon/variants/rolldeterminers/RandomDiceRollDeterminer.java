@@ -2,7 +2,7 @@ package frs.hotgammon.variants.rolldeterminers;
 
 import java.util.Random;
 
-import frs.hotgammon.Game;
+import frs.hotgammon.framework.Game;
 import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.common.GameImpl;
 
