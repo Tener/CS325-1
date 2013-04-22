@@ -30,4 +30,6 @@ public interface GameObserver {
    */
   public void diceRolled( int[] values );
 
+public void setStatus(String string);
+
 }

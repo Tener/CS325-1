@@ -57,45 +57,40 @@ public class GameImpl implements Game {
 
 		numberOfTurns = 0;
 
-		board = new BoardImpl(28);
+		board = new BoardImpl();
 		
-		board.put(Color.RED, Location.B1.ordinal());
-		board.put(Color.RED, Location.B1.ordinal());
-		
-		board.put(Color.BLACK, Location.B6.ordinal());
-		board.put(Color.BLACK, Location.B6.ordinal());
-		board.put(Color.BLACK, Location.B6.ordinal());
-		board.put(Color.BLACK, Location.B6.ordinal());
-		board.put(Color.BLACK, Location.B6.ordinal());
-
-		board.put(Color.BLACK, Location.B8.ordinal());
-		board.put(Color.BLACK, Location.B8.ordinal());
-		board.put(Color.BLACK, Location.B8.ordinal());
-		
-		board.put(Color.RED, Location.B12.ordinal());
-		board.put(Color.RED, Location.B12.ordinal());
-		board.put(Color.RED, Location.B12.ordinal());
-		board.put(Color.RED, Location.B12.ordinal());
-		board.put(Color.RED, Location.B12.ordinal());
-
-		board.put(Color.BLACK, Location.R1.ordinal());
-		board.put(Color.BLACK, Location.R1.ordinal());
-
-		board.put(Color.RED, Location.R6.ordinal());
-		board.put(Color.RED, Location.R6.ordinal());
-		board.put(Color.RED, Location.R6.ordinal());
-		board.put(Color.RED, Location.R6.ordinal());
-		board.put(Color.RED, Location.R6.ordinal());
-
-		board.put(Color.RED, Location.R8.ordinal());
-		board.put(Color.RED, Location.R8.ordinal());
-		board.put(Color.RED, Location.R8.ordinal());
-
-		board.put(Color.BLACK, Location.R12.ordinal());
-		board.put(Color.BLACK, Location.R12.ordinal());
-		board.put(Color.BLACK, Location.R12.ordinal());
-		board.put(Color.BLACK, Location.R12.ordinal());
-		board.put(Color.BLACK, Location.R12.ordinal());
+		configure(new Placement[] {
+	    		new Placement(Color.RED,Location.B1),
+	    		new Placement(Color.RED,Location.B1),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.RED,Location.B12),
+	    		new Placement(Color.RED,Location.B12),
+	    		new Placement(Color.RED,Location.B12),
+	    		new Placement(Color.RED,Location.B12),
+	    		new Placement(Color.RED,Location.B12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),		
+	    		new Placement(Color.RED,Location.R8),
+	    		new Placement(Color.RED,Location.R8),
+	    		new Placement(Color.RED,Location.R8),		
+	    		new Placement(Color.RED,Location.R6),
+	    		new Placement(Color.RED,Location.R6),
+	    		new Placement(Color.RED,Location.R6),
+	    		new Placement(Color.RED,Location.R6),
+	    		new Placement(Color.RED,Location.R6),		
+	    		new Placement(Color.BLACK,Location.R1),
+	    		new Placement(Color.BLACK,Location.R1),
+	    });
 
 
 		colorInTurn = Color.NONE;
@@ -213,23 +208,34 @@ public class GameImpl implements Game {
 		// TODO Auto-generated method stub
 		return board;
 	}
+	
+	
 	static public class Placement {
-		public Location location;
-		public Color	player;
-		public Placement(Color player, Location location) {
-			this.player = player;
-			this.location = location;
-		}
+	    public Location location;
+	    public Color    player;
+	    public Placement(Color player, Location location) {
+	        this.player = player;
+	        this.location = location;
+	    }
 	}
-
+  	
 	public void configure(Placement[] placements) {
-		if (placements == null || placements.length == 0) {			
-			return;
-		}
-		for (int i = 0; i < placements.length; i++) {
-			board.put(placements[i].player, placements[i].location.ordinal());	
-		}
+		board = new BoardImpl();
+	    for (int i = 0; i < placements.length; i++) {
+	        //gameBoard.place(placements[i].player, placements[i].location.ordinal());	
+	    	Location from = getPlayerBearOff(placements[i].player);
+	    	board.put(placements[i].player, from.ordinal());
+	        move(from, placements[i].location);	        
+	    }
 	}
+	
+	 private Color determineStartingPlayer(int[] dRoll){
+		  return (dRoll[0] > dRoll[1]) ? Color.RED : Color.BLACK;
+	  }
+	 
+	 private Location getPlayerBearOff(Color player){
+			return ( player == Color.BLACK) ? Location.B_BEAR_OFF : Location.R_BEAR_OFF;
+		}
 
 	@Override
 	public void addObserver(GameObserver observer) {

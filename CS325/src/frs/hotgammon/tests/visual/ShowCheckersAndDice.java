@@ -4,13 +4,17 @@ import minidraw.standard.*;
 import minidraw.framework.*;
 
 import java.awt.*;
+import java.util.HashMap;
+
 import javax.swing.*;
 
 import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.framework.Game;
 import frs.hotgammon.tests.stub.StubGame1;
+import frs.hotgammon.variants.factory.AlphaFactory;
 import frs.hotgammon.variants.factory.DeltaFactory;
 import frs.hotgammon.view.HotgammonDrawing;
+import frs.hotgammon.view.HotgammonTool;
 import frs.hotgammon.view.figures.CheckerFigure;
 import frs.hotgammon.view.figures.DieFigure;
 import frs.hotgammon.view.tools.CheckerTool;
@@ -39,16 +43,17 @@ public class ShowCheckersAndDice {
     DrawingEditor editor = 
       new MiniDrawApplication( "Show HotGammon figures...",  
                                new HotGammonFactory() );
+ 
+    editor.open();
     
     Game game = new StubGame1();
-    //Game game = new GameImpl(new DeltaFactory());
-    editor.open();
+    //Game game = new GameImpl(new AlphaFactory());
     
     HotgammonDrawing model = (HotgammonDrawing) editor.drawing();
     
     model.setGame(game);
     
-    game.addObserver(model);
+    game.addObserver((HotgammonDrawing) editor.drawing());
 
     DieFigure redDie = new DieFigure(4, new Point(216, 202));
     DieFigure blackDie = new DieFigure(2, new Point(306, 202));
@@ -61,8 +66,21 @@ public class ShowCheckersAndDice {
     editor.drawing().add(rc);
     
     
-    editor.setTool( new CheckerTool(editor, game) );
-    //editor.setTool( new DieRollTool(editor, game) ); 
+  //HotGammonTool Setup
+    final Tool dieRollTool = new DieRollTool(editor,game);
+    final Tool moveTool = new CheckerTool(editor,game);
+    HashMap<String, Tool> states = new HashMap<String, Tool>(){{
+		put( HotgammonTool.DIETOOL, dieRollTool );
+		put( HotgammonTool.MOVETOOL, moveTool );
+		}};
+	//
+    
+	//Add tool to Editor
+    editor.setTool( 
+    		new HotgammonTool(editor,game, HotgammonTool.MOVETOOL, states) );
+    
+    game.newGame();
+    game.nextTurn();
 
   }
 }
@@ -75,7 +93,7 @@ class HotGammonFactory implements Factory {
   }
 
   public Drawing createDrawing( DrawingEditor editor ) {
-    return new HotgammonDrawing();
+    return new HotgammonDrawing( editor);
   }
 
   public JTextField createStatusField( DrawingEditor editor ) {

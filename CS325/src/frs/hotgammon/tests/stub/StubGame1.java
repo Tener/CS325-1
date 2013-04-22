@@ -1,5 +1,7 @@
 package frs.hotgammon.tests.stub;
 
+import java.util.ArrayList;
+
 import frs.hotgammon.framework.*;
 
 /** A testing stub for visual testing of
@@ -32,6 +34,8 @@ public class StubGame1 implements Game {
   boolean tictac = true;
   // moves left to make for a player
   int movesLeft;
+  
+  private ArrayList<GameObserver> observers = new ArrayList<GameObserver>();
 
   public void newGame() {
     movesLeft = 2;
@@ -43,13 +47,17 @@ public class StubGame1 implements Game {
 
   // count turns, used to simulate dice rolling
   int turn;
-  private GameObserver observer;
   public void nextTurn() {
     turn++;
     movesLeft = 2;
     tictac = !tictac;
     System.out.println("nextTurn: " + turn);
-    observer.diceRolled(diceThrown());
+    
+    for( GameObserver gO : this.observers ){
+		  gO.diceRolled(diceThrown());
+		  gO.setStatus(getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves left...");
+	  }
+    
   }
 
   /** for testing purposes location B3 and R3 are
@@ -63,12 +71,24 @@ public class StubGame1 implements Game {
       } else if ( from == loneRiderHere2 ) {
         loneRiderHere2 = to; 
       }
-      observer.checkerMove(from, to);
+      for( GameObserver gO : this.observers ){
+		  gO.checkerMove(from, to);
+      }
     } else {
       System.out.println("GAME: Moving to B3/R3 is illegal (testing purposes)");
+      for( GameObserver gO : this.observers ){
+		  gO.checkerMove(from, from);
+		  gO.setStatus("This Move is illegal for " + getPlayerInTurn().toString() + " Moves Left: "+ getNumberOfMovesLeft());
+      }
       return false;
     }
     movesLeft--;
+    
+    for( GameObserver gO : this.observers ){
+		  gO.checkerMove(from, to);
+		  gO.setStatus("This Move is legal for " + getPlayerInTurn().toString() + " Moves Left: "+ getNumberOfMovesLeft());
+
+    }
     return true;
   }
 
@@ -126,6 +146,11 @@ public class StubGame1 implements Game {
   }
 
   public void addObserver(GameObserver gl) {
-	  observer = gl;
+	  this.observers.add(gl);
   }
+  
+  public ArrayList<GameObserver> getObservers(){
+		return this.observers;
+	}
+
 }

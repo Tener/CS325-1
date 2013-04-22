@@ -28,6 +28,11 @@ public class CheckerTool extends SelectionTool{
 		super(editor);
 		this.game=game;
 	}
+	
+	private boolean isChecker(Figure f){
+		return f != null && (f instanceof CheckerFigure);
+		
+	}
 
 	@Override
 	public void mouseDown(MouseEvent e, int x, int y) {
@@ -39,7 +44,7 @@ public class CheckerTool extends SelectionTool{
 		figure = model.findFigure(e.getX(), e.getY());
 
 
-		if(figure !=null){
+		if(isChecker(figure)){
 			if ( e.isShiftDown() ) {
 				
 				model.toggleSelection(figure);
