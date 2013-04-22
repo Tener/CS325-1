@@ -56,49 +56,7 @@ public class HotgammonDrawing extends StandardDrawing implements GameObserver{
 
 	@Override
 	public void checkerMove(Location from, Location to) {
-//		Point fromPoint = Convert.locationAndCount2xy(from, game.getCount(from)+1);
-//		//find figure at point
-//		Figure f =findFigure(fromPoint.x, fromPoint.y);
-//		//check if checker
-//		if(isChecker(f)){
-//			//if is then remove it and redraw with invalidate
-//			
-//			System.out.println("This is a figre to be removed");
-//			remove(f);
-//			invalidate();
-//		}
-//		
-//		//to to a point
-//		Point toPoint = Convert.locationAndCount2xy(to, game.getCount(to)-1);
-//		//color form game
-//		Color color = game.getColor(to);
-//		System.out.println(color);
-//		//add checker.
-//		addChecker(color, toPoint);
-//		
-//		if(!(from.equals(Location.R_BEAR_OFF) || from.equals(Location.R_BEAR_OFF))  && this.game.getNumberOfMovesLeft() == 0){
-//			((HotgammonTool) this.editor.tool()).setState(HotgammonTool.DIE_ROLL_TOOL);
-//		}
-//		if(!isChecker(f)){
-//	    	
-//			System.out.println("attempting a move to bar");
-//			f.moveBy(toPoint.x-fromPoint.x,toPoint.y-fromPoint.y);
-//			fromPoint=Convert.locationAndCount2xy(from, 1);
-//			toPoint=Convert.locationAndCount2xy(from,0);
-//			System.out.println(fromPoint.x+" "+fromPoint.y);
-//			Iterator<Figure> it=iterator();
-//			while(it.hasNext()){
-//				Figure fig=it.next();
-//				System.out.println(fig.displayBox().x+", "+fig.displayBox().y);
-//			}
-//			f=findFigure(fromPoint.x+1,toPoint.y-1);
-//
-//			if(f!=null){
-//				System.out.println("attempting to move checker down");
-//				f.moveBy(toPoint.x-fromPoint.x,toPoint.y-fromPoint.y);
-//			}
-//
-//		}
+
 		
 		Point fromPoint = Convert.locationAndCount2xy(from, game.getCount(from) + 1);
 		Point toPoint = Convert.locationAndCount2xy(to, game.getCount(to)-1);

@@ -46,8 +46,8 @@ public class ShowCheckersAndDice {
  
     editor.open();
     
-    Game game = new StubGame1();
-    //Game game = new GameImpl(new AlphaFactory());
+    //Game game = new StubGame1();
+    Game game = new GameImpl(new AlphaFactory());
     
     HotgammonDrawing model = (HotgammonDrawing) editor.drawing();
     
@@ -60,10 +60,10 @@ public class ShowCheckersAndDice {
     model.add(redDie);
     model.add(blackDie);
     
-    CheckerFigure bc = new CheckerFigure(frs.hotgammon.framework.Color.BLACK, new Point(21,21));
-    editor.drawing().add(bc);
-    CheckerFigure rc = new CheckerFigure(frs.hotgammon.framework.Color.RED, new Point(507,390));
-    editor.drawing().add(rc);
+//    CheckerFigure bc = new CheckerFigure(frs.hotgammon.framework.Color.BLACK, new Point(21,21));
+//    editor.drawing().add(bc);
+//    CheckerFigure rc = new CheckerFigure(frs.hotgammon.framework.Color.RED, new Point(507,390));
+//    editor.drawing().add(rc);
     
     
   //HotGammonTool Setup
