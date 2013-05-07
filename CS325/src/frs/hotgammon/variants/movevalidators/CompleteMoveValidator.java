@@ -70,7 +70,7 @@ public class CompleteMoveValidator implements MoveValidator {
 		
 		for( GameObserver gameObserver : game.observers ){
 			  
-			  gameObserver.setStatus("Moving in wrong direction. Players turn: " + game.colorInTurn + " Moves left: " + game.diceRolled );
+			  gameObserver.setStatus("Moving in wrong direction. Players turn: " + game.colorInTurn + " Moves left: " + game.diceRolled + ". Roll die if no legal move.");
 		  }
 		return false;
 
@@ -84,7 +84,7 @@ public class CompleteMoveValidator implements MoveValidator {
 		
 		for( GameObserver gameObserver : game.observers ){
 			  
-			  gameObserver.setStatus("This is not a legal move" );
+			  gameObserver.setStatus("This is not a legal move. Click die if legal moves left." );
 		  }
 		return false;
 	}
@@ -105,7 +105,7 @@ public class CompleteMoveValidator implements MoveValidator {
 			
 			for( GameObserver gameObserver : game.observers ){
 				  
-				  gameObserver.setStatus("Player can not move this die value. Players turn: " + game.colorInTurn + " Moves left: " + game.diceRolled );
+				  gameObserver.setStatus("Player can not move die value. Players turn: " + game.colorInTurn + " Moves left: " + game.diceRolled );
 			  }
 			return false;
 		}
