@@ -29,17 +29,19 @@ public class DieRollTool extends AbstractTool {
 	public void mouseUp(MouseEvent e, int x, int y) {
 		
 		HotgammonDrawing model = (HotgammonDrawing) editor.drawing();
+		
 		model.lock();
 		Figure f = model.findFigure(e.getX(), e.getY());
 		model.unlock();
 		
         if (isDie(f)) {
             game.nextTurn();
+            
             ((HotgammonTool) editor.tool()).setState(HotgammonTool.MOVETOOL);
         }
         else{
         	for( GameObserver gO : this.game.getObservers() ){
-				  gO.setStatus(this.game.getPlayerInTurn().toString() + "'s turn is over. The dice must be rolled for the next turn to start.");
+				  gO.setStatus("Roll die for next turn");
 			  }
         }
     }

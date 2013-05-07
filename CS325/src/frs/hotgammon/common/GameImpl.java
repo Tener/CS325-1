@@ -146,7 +146,7 @@ public class GameImpl implements Game {
 		
 		for( GameObserver gameObserver : this.observers ){
 			  gameObserver.diceRolled(currentDice);
-			  gameObserver.setStatus("Player " + getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves. Die: " + this.diceRolled);
+			  gameObserver.setStatus("Player " + getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves. Die: " + this.diceRolled + " If no valid move, click on die.");
 		  }
 	}
 	
