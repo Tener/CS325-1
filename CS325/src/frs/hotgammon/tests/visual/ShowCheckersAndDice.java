@@ -12,7 +12,10 @@ import frs.hotgammon.common.GameImpl;
 import frs.hotgammon.framework.Game;
 import frs.hotgammon.tests.stub.StubGame1;
 import frs.hotgammon.variants.factory.AlphaFactory;
+import frs.hotgammon.variants.factory.BetaFactory;
 import frs.hotgammon.variants.factory.DeltaFactory;
+import frs.hotgammon.variants.factory.EpsilonFactory;
+import frs.hotgammon.variants.factory.SemiFactory;
 import frs.hotgammon.view.HotgammonDrawing;
 import frs.hotgammon.view.HotgammonTool;
 import frs.hotgammon.view.figures.CheckerFigure;
@@ -47,18 +50,18 @@ public class ShowCheckersAndDice {
     editor.open();
     
     //Game game = new StubGame1();
-    Game game = new GameImpl(new AlphaFactory());
+    Game game = new GameImpl(new SemiFactory());
     
     HotgammonDrawing model = (HotgammonDrawing) editor.drawing();
-    
+    game.addObserver((HotgammonDrawing) editor.drawing());
     model.setGame(game);
     
-    game.addObserver((HotgammonDrawing) editor.drawing());
+    
 
-    DieFigure redDie = new DieFigure(4, new Point(216, 202));
-    DieFigure blackDie = new DieFigure(2, new Point(306, 202));
-    model.add(redDie);
-    model.add(blackDie);
+//    DieFigure redDie = new DieFigure(4, new Point(216, 202));
+//    DieFigure blackDie = new DieFigure(2, new Point(306, 202));
+//    model.add(redDie);
+//    model.add(blackDie);
     
 //    CheckerFigure bc = new CheckerFigure(frs.hotgammon.framework.Color.BLACK, new Point(21,21));
 //    editor.drawing().add(bc);
@@ -66,7 +69,6 @@ public class ShowCheckersAndDice {
 //    editor.drawing().add(rc);
     
     
-  //HotGammonTool Setup
     final Tool dieRollTool = new DieRollTool(editor,game);
     final Tool moveTool = new CheckerTool(editor,game);
     HashMap<String, Tool> states = new HashMap<String, Tool>(){{
@@ -75,12 +77,12 @@ public class ShowCheckersAndDice {
 		}};
 	//
     
-	//Add tool to Editor
     editor.setTool( 
     		new HotgammonTool(editor,game, HotgammonTool.MOVETOOL, states) );
     
     game.newGame();
     game.nextTurn();
+   
 
   }
 }

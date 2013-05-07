@@ -20,9 +20,9 @@ public class AceyDeuceyTurnDeterminer implements TurnDeterminer {
 			if((gameImpl.diceThrown()[0] == DICE_ONE) && (gameImpl.diceThrown()[1] == DICE_TWO)){
 				return gameImpl.getPlayerInTurn();
 			}
-		
-		
-		return (colorInTurn != Color.BLACK) ? Color.BLACK : Color.RED;
+			else{
+				return (colorInTurn != Color.BLACK) ? Color.BLACK : Color.RED;
+			}
 	}
 
 	@Override

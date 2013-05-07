@@ -7,8 +7,9 @@ import frs.hotgammon.framework.Game;
 import minidraw.framework.DrawingEditor;
 import minidraw.framework.Tool;
 import minidraw.standard.AbstractTool;
+import minidraw.standard.SelectionTool;
 
-public class HotgammonTool extends AbstractTool{
+public class HotgammonTool extends SelectionTool{
 
 	private Tool currentTool;
 	private Game game;

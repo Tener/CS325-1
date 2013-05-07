@@ -15,7 +15,7 @@ import minidraw.standard.StandardDrawing;
 
 public class HotgammonDrawing extends StandardDrawing implements GameObserver{
 	
-	private DieFigure dieFigureCache[] = new DieFigure[2];
+	private DieFigure diceFigures[] = new DieFigure[2];
 	int diceIndex = 0;
 	Point [] dicePoints = {new Point(216, 202), new Point(306, 202)};
 	private Game game;
@@ -37,14 +37,14 @@ public class HotgammonDrawing extends StandardDrawing implements GameObserver{
 		
 		int currentDiceModIndex = diceIndex %2;
 		
-		if (dieFigureCache[currentDiceModIndex] == null) {
-		      dieFigureCache[currentDiceModIndex] = new DieFigure(dieValue, dicePoints[currentDiceModIndex]);
-		      super.add(dieFigureCache[currentDiceModIndex]);
+		if (diceFigures[currentDiceModIndex] == null) {
+		      diceFigures[currentDiceModIndex] = new DieFigure(dieValue, dicePoints[currentDiceModIndex]);
+		      super.add(diceFigures[currentDiceModIndex]);
 		    }
 		    else{
-		    	dieFigureCache[currentDiceModIndex].set("die" + dieValue, dicePoints[currentDiceModIndex]);
+		    	diceFigures[currentDiceModIndex].set("die" + dieValue, dicePoints[currentDiceModIndex]);
+		    	diceFigures[currentDiceModIndex].changed();
 		    }
-		dieFigureCache[currentDiceModIndex].changed();
 		
 		diceIndex++;
 	}
@@ -56,28 +56,37 @@ public class HotgammonDrawing extends StandardDrawing implements GameObserver{
 
 	@Override
 	public void checkerMove(Location from, Location to) {
+		
+		if((from == Location.R_BEAR_OFF || from == Location.B_BEAR_OFF) || (to == Location.R_BAR || to ==Location.B_BAR) ){
 
 		
-		Point fromPoint = Convert.locationAndCount2xy(from, game.getCount(from) + 1);
-		Point toPoint = Convert.locationAndCount2xy(to, game.getCount(to)-1);
+		Point fromPoint = Convert.locationAndCount2xy(from, game.getCount(from) );
+		Point toPoint = Convert.locationAndCount2xy(to, game.getCount(to) -1);
 
 		lock();
 		
 		//find figure at point
 
-	    Figure f = findFigure(toPoint.x, fromPoint.y);
+	    Figure f = findFigure(fromPoint.x, fromPoint.y);
 
 	    unlock();
 
 	  //check if checker
 	    if(!isChecker(f)){
 	    	Color color = game.getColor(to);
-	    	this.remove(f);
+	    	lock();
 	    	f = new CheckerFigure(color, fromPoint);
+	    	unlock();
+	    	
+	    	lock();
+			add(f);
+			unlock();
 				
 	    }
-
+	    lock();
 		f.moveBy(toPoint.x - fromPoint.x, toPoint.y - fromPoint.y);
+		unlock();
+		}
 
 		if( this.game.getNumberOfMovesLeft() == 0){
 			((HotgammonTool) this.editor.tool()).setState(HotgammonTool.DIETOOL);

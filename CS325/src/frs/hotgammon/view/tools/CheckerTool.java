@@ -73,15 +73,17 @@ public class CheckerTool extends SelectionTool{
 	public void mouseUp(MouseEvent e, int x, int y) {
 		
 		Location location =Convert.xy2Location(x, y);
-		Point point=Convert.locationAndCount2xy(location , game.getCount(location ));
+		
 		if(game.move(originalLocation, location )){
+			
+			Point point=Convert.locationAndCount2xy(location , game.getCount(location ) -1);
 			
 			for (Figure f :editor().drawing().selection()){
 				
 				f.moveBy(point.x-f.displayBox().x,point.y-f.displayBox().y);
 			}
 		}else {
-			Point oldPoint=Convert.locationAndCount2xy(originalLocation, game.getCount(originalLocation));
+			Point oldPoint=Convert.locationAndCount2xy(originalLocation, game.getCount(originalLocation) -1);
 			
 			for (Figure f :editor().drawing().selection()){
 				

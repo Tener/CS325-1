@@ -1,6 +1,9 @@
 package frs.hotgammon.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import frs.hotgammon.Board;
 import frs.hotgammon.framework.Color;
@@ -8,6 +11,7 @@ import frs.hotgammon.framework.Game;
 import frs.hotgammon.framework.GameObserver;
 import frs.hotgammon.HotgammonFactory;
 import frs.hotgammon.framework.Location;
+import frs.hotgammon.BoardPoint;
 import frs.hotgammon.MoveValidator;
 import frs.hotgammon.RollDeterminer;
 import frs.hotgammon.common.GameImpl.Placement;
@@ -31,13 +35,15 @@ public class GameImpl implements Game {
 
 	public Color colorInTurn = Color.NONE;
 	public Board board;
+	public int movesPlayerHas;
 	public int numberOfTurns;
 	public int[] currentDice;
-	public int currentDiceIndex;
-
+	public List<Integer> diceRolled;
+	
 	public Game game;
 	
 	private HotgammonFactory factory;
+	public ArrayList<GameObserver> observers = new ArrayList<GameObserver>();
 	
 	public GameImpl(HotgammonFactory factory) {
 		this.factory = factory;
@@ -54,32 +60,39 @@ public class GameImpl implements Game {
 //	}
 
 	public void newGame() {
+		
+		colorInTurn = Color.NONE;
+		currentDice = null;
 
 		numberOfTurns = 0;
-
-		board = new BoardImpl();
 		
 		configure(new Placement[] {
+	    		
+	    		//Place blacks
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B6),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.BLACK,Location.B8),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R12),
+	    		new Placement(Color.BLACK,Location.R1),
+	    		new Placement(Color.BLACK,Location.R1),
+	    		
+	    		//Place reds
 	    		new Placement(Color.RED,Location.B1),
 	    		new Placement(Color.RED,Location.B1),
-	    		new Placement(Color.BLACK,Location.B6),
-	    		new Placement(Color.BLACK,Location.B6),
-	    		new Placement(Color.BLACK,Location.B6),
-	    		new Placement(Color.BLACK,Location.B6),
-	    		new Placement(Color.BLACK,Location.B6),
-	    		new Placement(Color.BLACK,Location.B8),
-	    		new Placement(Color.BLACK,Location.B8),
-	    		new Placement(Color.BLACK,Location.B8),
 	    		new Placement(Color.RED,Location.B12),
 	    		new Placement(Color.RED,Location.B12),
 	    		new Placement(Color.RED,Location.B12),
 	    		new Placement(Color.RED,Location.B12),
 	    		new Placement(Color.RED,Location.B12),
-	    		new Placement(Color.BLACK,Location.R12),
-	    		new Placement(Color.BLACK,Location.R12),
-	    		new Placement(Color.BLACK,Location.R12),
-	    		new Placement(Color.BLACK,Location.R12),
-	    		new Placement(Color.BLACK,Location.R12),		
 	    		new Placement(Color.RED,Location.R8),
 	    		new Placement(Color.RED,Location.R8),
 	    		new Placement(Color.RED,Location.R8),		
@@ -87,76 +100,271 @@ public class GameImpl implements Game {
 	    		new Placement(Color.RED,Location.R6),
 	    		new Placement(Color.RED,Location.R6),
 	    		new Placement(Color.RED,Location.R6),
-	    		new Placement(Color.RED,Location.R6),		
-	    		new Placement(Color.BLACK,Location.R1),
-	    		new Placement(Color.BLACK,Location.R1),
+	    		new Placement(Color.RED,Location.R6)		
+	    		
 	    });
 
-
-		colorInTurn = Color.NONE;
-		currentDice = null;
 	}
 
 	public void nextTurn() {
 
+		
 		colorInTurn = factory.getTurnDeterminer().nextTurnChangePlayer(colorInTurn, this);
-		factory.getWinnerDeterminer().makeATurn();
-		numberOfTurns++;
+		
+		
 		currentDice = diceThrown();
-		this.factory.setFactory(this);
+		
+		if( numberOfTurns == 0){
+			
+			colorInTurn = findPlayerToStartGame(currentDice);
+			
+			for( GameObserver gameObserver : this.observers ){
+				  gameObserver.diceRolled(currentDice);
+				  gameObserver.setStatus("Determining the starting player by the opeining die roll. If you do not have a valid move, double click on the die to roll next players turn.");
+			  }
+			
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			currentDice = diceThrown();
+			
+		}
+		
+		if (currentDice.length == 2){
+			diceRolled = new ArrayList<Integer>(Arrays.asList(currentDice[0], currentDice[1]));
+		}
+		else{
+			diceRolled = new ArrayList<Integer>(Arrays.asList(currentDice[0], currentDice[1], currentDice[2], currentDice[3]));
+		}
+		
+		numberOfTurns++;
+		
+		updateNumberOfMoves();
+		
+		for( GameObserver gameObserver : this.observers ){
+			  gameObserver.diceRolled(currentDice);
+			  gameObserver.setStatus("Player " + getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves. Die: " + this.diceRolled);
+		  }
+	}
+	
+	
+	
+	public Color findPlayerToStartGame (int[] currentDice){
+		
+		System.out.println("Find Starting Player");
+
+		
+		return (currentDice[0] > currentDice[1]) ? Color.RED : Color.BLACK;
+	}
+	
+	public void updateNumberOfMoves(){
+		
+		int newNumberOfMoves = diceRolled.size();
+		movesPlayerHas = newNumberOfMoves;
 	}
 
-	public boolean move(Location from, Location to) { 
+	
+	
+	public boolean move(Location from, Location to) {
+		
+		if(winner() != Color.NONE){
+			for( GameObserver gameObserver : this.observers ){
+				  
+				  gameObserver.setStatus(winner() + " Won the game");
+			  }
+			
+			return false;
+		}
+		
+		System.out.println( from + " " + to + " " + getColor(Location.R_BEAR_OFF) + getCount(Location.R_BEAR_OFF));
+		System.out.println( getColor(Location.B_BEAR_OFF) +" " + getCount(Location.B_BEAR_OFF));
+		
+		if(from == Location.R_BEAR_OFF || from == Location.B_BEAR_OFF){
+			
+			if(numberOfTurns == 0){
+			
+			  Color colorOfChecker = (from == Location.R_BEAR_OFF) ? Color.RED : Color.BLACK;
+			  
+			  //Move Checker to board
+			  board.move(from, to, colorOfChecker);
+			  
+			  for( GameObserver gameObserver : this.observers ){
+				  gameObserver.checkerMove(from, to);
+			  }
+			  return true;
+			}
+		  }
+		
 	  
-	  if( currentDiceIndex == 0){
+	  if( movesPlayerHas == 0){
+		  
+		  for( GameObserver gameObserver : this.observers ){
+			  gameObserver.checkerMove(from, from);
+			  gameObserver.setStatus("Invalid move you have 0 moves left");
+		  }
+		  
 		  return false;
+	  }
+	  
+	  
+	  
+	  if (isAllPicesInInnerTable()){
+		  if(!checkIfIsValidMoveInsideTable()){
+			  movesPlayerHas = 0;
+		  for( GameObserver gameObserver : this.observers ){
+			  gameObserver.checkerMove(from, from);
+			  gameObserver.setStatus("There is no valid move left to make. Your turn has expired. Opposite player please roll dice");
+		  }
+		  }
+	  }
+	  
+	  
+	  if(!isAnyValidMovesLeftFromBar()){
+		  movesPlayerHas = 0;
+		  
+		  for( GameObserver gameObserver : this.observers ){
+			  gameObserver.checkerMove(from, from);
+			  gameObserver.setStatus("There are no valid moves left. Passing turn and moving on to next player");
+		  }
+		  
 	  }
 	  
 	  if( factory.getMoveValidator().isValid(from, to)){
 		  
-		  if (getCount(to) > 0 && getColor(to) != getPlayerInTurn()) {
-			  Color playerColor = this.getColor(from);
-			  Color playerBarColor = this.getColor(to);
-				Location bar = playerBarColor == Color.RED ? Location.R_BAR : Location.B_BAR;
-				
-				int tempFrom  = board.returnPoint(from.ordinal()).checkers;
-				  int tempBar = board.returnPoint(bar.ordinal()).checkers;
-						 
-				  board.returnPoint(from.ordinal()).checkers = tempFrom - 1;
-				  board.returnPoint(to.ordinal()).playerInTurn = playerColor;
-				  board.returnPoint(bar.ordinal()).checkers = tempBar + 1;
-						 
-				  if(board.returnPoint(from.ordinal()).checkers == 0){
-					  board.returnPoint(from.ordinal()).playerInTurn = Color.NONE;
-				  }
-						 
-				  currentDiceIndex = currentDiceIndex - 1;
-				  
-				  return true;
-			}
+		  System.out.println("Dice Rolled in move of game " + diceRolled.toString());
 		  
-		  int tempFrom  = board.returnPoint(from.ordinal()).checkers;
-		  int tempTo = board.returnPoint(to.ordinal()).checkers;
-				 
-		  if(board.returnPoint(to.ordinal()).playerInTurn == Color.NONE){
-			  board.returnPoint(to.ordinal()).playerInTurn = board.returnPoint(from.ordinal()).playerInTurn;
+		  if(getCount(to) == 1 && getColor(to) != colorInTurn){
+			  opponentToBar(to);
 		  }
-				 
-		  board.returnPoint(from.ordinal()).checkers = tempFrom - 1;
-		  board.returnPoint(to.ordinal()).checkers = tempTo + 1;
-				 
-		  if(board.returnPoint(from.ordinal()).checkers == 0){
-			  board.returnPoint(from.ordinal()).playerInTurn = Color.NONE;
-		  }
-				 
-		  currentDiceIndex = currentDiceIndex - 1;
 		  
-		  return true;
+		  
+		  
+		  if (testAndDoCanBeMoved(from, to)){
+			  
+			  movesPlayerHas--;
+			  
+			  int dieUsed = (colorInTurn == Color.BLACK) ? Location.distance(from, to) : (-1 * Location.distance(from, to));
+			  
+			  int indexInDiceRolled = diceRolled.indexOf(dieUsed);
+			  
+			  diceRolled.remove(indexInDiceRolled);
+			  
+			  for( GameObserver gameObserver : this.observers ){
+				  gameObserver.checkerMove(from, to);
+				  gameObserver.setStatus("Valid Move " + getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves left. Die: " + this.diceRolled + " If no valid move, click on die.");
+			  }
+			  
+			  return true;
+		  }
+		  
+		  else{
+		
+			  for( GameObserver gameObserver : this.observers ){
+				  gameObserver.checkerMove(from, from);
+				  gameObserver.setStatus("Invalid Move: " + getPlayerInTurn().toString() + " has "+ getNumberOfMovesLeft() +" moves left. Die: " + this.diceRolled + " If no valid move, click on die.");
+			  }
+		  }
+		  
 	  }
 	  return false;
 				 
 		
   }
+	
+	public boolean isAnyValidMovesLeftFromBar(){
+		
+		Location currentBar = ((colorInTurn == Color.BLACK)? Location.B_BAR : Location.R_BAR);
+		
+		if (getCount(currentBar) > 0 ){
+			for( int i = 0; i < diceRolled.size(); i++){
+				if(factory.getMoveValidator().isValid(currentBar, (Location.findLocation(colorInTurn, currentBar, diceRolled.get(i))))){
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isAllPicesInInnerTable(){		
+		Location [] outsideTable = (colorInTurn == Color.BLACK) ? board.getBlackOutTable() : board.getRedOutTable();
+			for(int i = 0; i < outsideTable.length; i++){
+				if( getCount(outsideTable[i]) > 0){
+					
+					if(getColor(outsideTable[i]) == colorInTurn){
+						
+						
+						return false;
+					}
+				}
+			}
+		return true;
+	}
+	
+	public boolean checkIfIsValidMoveOutsideTable(){
+	
+		Location [] outsideTable = (colorInTurn == Color.BLACK) ? board.getBlackOutTable() : board.getRedOutTable();
+		
+		for(int i = 0; i < outsideTable.length; i++){
+			if(getCount(outsideTable[i]) > 0){
+		
+				if(getColor(outsideTable[i]) == colorInTurn){
+			
+					if(factory.getMoveValidator().isValid(outsideTable[i], (Location.findLocation(colorInTurn, outsideTable[i], diceRolled.get(i))))){
+						return true;
+					}
+
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean checkIfIsValidMoveInsideTable(){
+		
+		Location [] insideTable = (colorInTurn == Color.BLACK) ? board.getBlackTable() : board.getRedTable();
+		
+		for(int i = 0; i < insideTable.length; i++){
+			if( getCount(insideTable[i]) > 0){
+		
+				if(getColor(insideTable[i]) == colorInTurn){
+					
+					for( int j = 0; j < diceRolled.size(); j++){
+			
+					if(factory.getMoveValidator().isValid(insideTable[i], (Location.findLocation(colorInTurn, insideTable[i], diceRolled.get(j))))){
+						
+						for( GameObserver gameObserver : this.observers ){
+							  
+							  gameObserver.setStatus("There is no valid move left to make. Your turn has expired. Opposite player please roll dice");
+						}
+						return true;
+					}
+					}
+
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	public boolean testAndDoCanBeMoved(Location from, Location to){
+		
+		boolean canBeRemoved = board.remove(colorInTurn, from.ordinal());
+		
+		boolean canBeAdded = board.place(colorInTurn,to.ordinal());
+		
+		if(canBeRemoved == true && canBeAdded == true){
+			return true;
+		}
+		return false;
+	}
 
 	public Color getPlayerInTurn() {
 		return colorInTurn;
@@ -164,27 +372,32 @@ public class GameImpl implements Game {
 
 	public int getNumberOfMovesLeft() {
 
-		return currentDiceIndex;
+		return movesPlayerHas;
 
 	}
 
 	public int[] diceThrown() {
-
-		currentDiceIndex = 2;
 		
-		currentDice = factory.getRollDeterminer().diceThrown(this);
+		
+		int[] newDiceArray = factory.getRollDeterminer().diceThrown(this);
+		
 
-		return currentDice;
+		return newDiceArray;
 
 	}
 
 	public int[] diceValuesLeft() {
-
-		if (currentDice.length > 1 && currentDice[1] > currentDice[0])
-			return new int[] { currentDice[1], currentDice[0] };
-
-		return currentDice;
+		
+		int[] diceValuesLeft = new int[diceRolled.size()];
+		
+		
+		  for (int i = 0; i < diceRolled.size(); i++){
+			  
+			  diceValuesLeft[i] = diceRolled.get(i);
+		  }
+		  return diceValuesLeft;
 	}
+	
 
 	public Color winner() {
 
@@ -205,7 +418,6 @@ public class GameImpl implements Game {
 
 
 	public Board playingBoard() {
-		// TODO Auto-generated method stub
 		return board;
 	}
 	
@@ -222,24 +434,49 @@ public class GameImpl implements Game {
 	public void configure(Placement[] placements) {
 		board = new BoardImpl();
 	    for (int i = 0; i < placements.length; i++) {
-	        //gameBoard.place(placements[i].player, placements[i].location.ordinal());	
+	    	//From location
 	    	Location from = getPlayerBearOff(placements[i].player);
-	    	board.put(placements[i].player, from.ordinal());
+	    	
+	    	//Place Checker on board
+	    	board.place(placements[i].player, from.ordinal());
 	        move(from, placements[i].location);	        
 	    }
 	}
 	
-	 private Color determineStartingPlayer(int[] dRoll){
-		  return (dRoll[0] > dRoll[1]) ? Color.RED : Color.BLACK;
+	 
+	 private void opponentToBar (Location loc){
+		 //Get opponentColor
+		 Color opponentColor = opponentColor();
+		 
+		 Location otherPlayerBar = (opponentColor == Color.BLACK) ? Location.B_BAR : Location.R_BAR;
+		  
+		 System.out.println("Moving Checker To The Bar");
+		 board.place(opponentColor, otherPlayerBar.ordinal());
+		  
+		 board.remove(opponentColor, loc.ordinal());
+
+		  for( GameObserver gameObserver : this.observers ){
+			  gameObserver.checkerMove(loc, otherPlayerBar);
+		  }
+		 
+	 }
+	 
+	 private Color opponentColor(){
+		  if(colorInTurn == Color.NONE){
+			  return Color.NONE;
+		  }
+		  return (colorInTurn == Color.RED) ? Color.BLACK : Color.RED;
 	  }
 	 
 	 private Location getPlayerBearOff(Color player){
 			return ( player == Color.BLACK) ? Location.B_BEAR_OFF : Location.R_BEAR_OFF;
 		}
 
-	@Override
-	public void addObserver(GameObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
+	 public void addObserver(GameObserver gl) {
+		  this.observers.add(gl);
+	  }
+	  
+	  public ArrayList<GameObserver> getObservers(){
+			return this.observers;
+		}
 }

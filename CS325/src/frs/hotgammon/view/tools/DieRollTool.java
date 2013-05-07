@@ -3,7 +3,10 @@ package frs.hotgammon.view.tools;
 import java.awt.event.MouseEvent;
 
 import frs.hotgammon.framework.Game;
+import frs.hotgammon.framework.GameObserver;
 import frs.hotgammon.view.HotgammonDrawing;
+import frs.hotgammon.view.HotgammonTool;
+import frs.hotgammon.view.figures.CheckerFigure;
 import frs.hotgammon.view.figures.DieFigure;
 
 import minidraw.framework.DrawingEditor;
@@ -18,6 +21,11 @@ public class DieRollTool extends AbstractTool {
 		this.game = game;
 	}
 	
+	private boolean isDie(Figure f){
+		return f != null && (f instanceof DieFigure);
+		
+	}
+	
 	public void mouseUp(MouseEvent e, int x, int y) {
 		
 		HotgammonDrawing model = (HotgammonDrawing) editor.drawing();
@@ -25,8 +33,14 @@ public class DieRollTool extends AbstractTool {
 		Figure f = model.findFigure(e.getX(), e.getY());
 		model.unlock();
 		
-        if (f instanceof DieFigure) {
+        if (isDie(f)) {
             game.nextTurn();
+            ((HotgammonTool) editor.tool()).setState(HotgammonTool.MOVETOOL);
+        }
+        else{
+        	for( GameObserver gO : this.game.getObservers() ){
+				  gO.setStatus(this.game.getPlayerInTurn().toString() + "'s turn is over. The dice must be rolled for the next turn to start.");
+			  }
         }
     }
 

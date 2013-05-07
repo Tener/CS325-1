@@ -10,19 +10,23 @@ public class RandomDiceRollDeterminer implements RollDeterminer {
 
 	
 	Game game;
+	int[] arr = new int[2];
+	private final int[] DICE = {1, 2, 3, 4, 5, 6};
 	
 	@Override
 	public int[] diceThrown(GameImpl game) {
 		
-		int[] arr = new int[2];
-		Random rand = new Random();
+		Random rand = new Random(); 
+		
+		arr = new int[]{DICE[rand.nextInt(DICE.length )],
+				DICE[rand.nextInt(DICE.length )]}; 		
 
-		arr[0] = rand.nextInt(7);
-		arr[1] = rand.nextInt(7);
+		if (arr[0] == arr[1]){
+			
+			arr = new int[]{arr[0], arr[1], arr[0], arr[1]};
+		}
 		
-		game.currentDice = arr;
-		
-		return game.currentDice;
+		return arr;
 		
 	}
 	
